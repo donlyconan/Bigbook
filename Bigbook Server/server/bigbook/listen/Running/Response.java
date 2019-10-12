@@ -1,5 +1,7 @@
 package bigbook.listen.Running;
 
+import java.io.IOException;
+
 import bigbook.Platform.Platform;
 import bigbook.listen.Listen;
 import bigbook.service.Message;
@@ -9,36 +11,13 @@ public class Response implements Platform
 {
 	private static final ObservableMap<String,SocketRunning> USER_ONLINE = Listen.getUserOnline();
 	
-	public void sendUser(Message sms) {
-		SocketRunning socket = USER_ONLINE.get(sms.getReciever());
+	public static void sendUser(Message sms) throws IOException {
+		SocketRunning running = USER_ONLINE.get(sms.getReciever());
 		sms.setCode(CMxMS_RECIEVE);
-		
-		int key = 0;
-		
-		switch (key)
-		{
-			case 1:
-				
-				break;
-			
-			default:
-				break;
-		}
+		running.Send(sms);
 	}
 	
-	public void sendGroup(Message sms) {
-		SocketRunning socket = USER_ONLINE.get(sms.getReciever());
-		sms.setCode(CMxMS_RECIEVE);
+	public static void sendGroup(Message sms) {
 		
-		int key = 0;
-		switch (key)
-		{
-			case 1:
-				
-				break;
-			
-			default:
-				break;
-		}
 	}
 }

@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.text.*?>
+<?import java.lang.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.chart.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.shape.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.Group?>
+<?import javafx.scene.chart.CategoryAxis?>
+<?import javafx.scene.chart.LineChart?>
+<?import javafx.scene.chart.NumberAxis?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Circle?>
+
+<BorderPane xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.controller.DashbroadController">
+   <top>
+      <AnchorPane fx:id="dash" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="64.0" prefWidth="780.0" BorderPane.alignment="CENTER">
+         <children>
+            <HBox alignment="CENTER_LEFT" layoutX="187.0" layoutY="17.0" prefHeight="32.0" prefWidth="515.0" spacing="5.0" AnchorPane.leftAnchor="180.0" AnchorPane.rightAnchor="85.0" AnchorPane.topAnchor="15.0">
+               <children>
+                  <Label prefHeight="18.0" prefWidth="114.0" style="-fx-font-size: 14;" text="Thời gian hiện tại" />
+                  <TextField fx:id="txtTimeNow" editable="false" prefHeight="32.0" prefWidth="194.0" styleClass="text" stylesheets="@Style/Dashbroad.css" text="20/10/2019 04:30" />
+                  <Label style="-fx-font-size: 14;" text="IP Server">
+                     <HBox.margin>
+                        <Insets left="20.0" />
+                     </HBox.margin>
+                  </Label>
+                  <TextField fx:id="txtIP" editable="false" prefHeight="32.0" prefWidth="116.0" style="-fx-font-size: 14;" styleClass="text" stylesheets="@Style/Dashbroad.css" text="192.168.1.150" />
+               </children>
+            </HBox>
+            <Label layoutX="14.0" layoutY="13.0" style="-fx-text-fill: #000; -fx-font-size: 30;" text="Dashbroad" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="10.0" />
+            <Button id="btexit" layoutX="725.0" layoutY="1.0" maxHeight="-Infinity" maxWidth="-Infinity" minWidth="30.0" mnemonicParsing="false" onAction="#TurnOFFServer" prefHeight="40.0" prefWidth="40.0" stylesheets="@Style/Dashbroad.css" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+               <graphic>
+                  <ImageView fitHeight="35.0" fitWidth="42.0" pickOnBounds="true" preserveRatio="true" styleClass="Style\Dashbroad.css">
+                     <image>
+                        <Image url="@../../../../../../../Desktop/Server/Exit.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+            </Button>
+         </children>
+      </AnchorPane>
+   </top>
+   <center>
+      <AnchorPane BorderPane.alignment="CENTER">
+         <children>
+            <LineChart fx:id="lineChart" prefHeight="357.0" prefWidth="550.0" title="Hoạt động đăng nhập" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="210.0" AnchorPane.topAnchor="0.0">
+              <xAxis>
+                <CategoryAxis fx:id="categories" label="Dòng thời gian" prefHeight="42.0" prefWidth="502.0" side="BOTTOM" />
+              </xAxis>
+              <yAxis>
+                <NumberAxis fx:id="axis" label="Online" minorTickCount="100" side="LEFT" />
+              </yAxis>
+            </LineChart>
+            <VBox prefHeight="357.0" prefWidth="208.0" spacing="5.0" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="0.0">
+               <children>
+                  <Label alignment="CENTER" prefHeight="28.0" prefWidth="230.0" style="-fx-font-size: 20;" text="Hàng chờ" />
+                  <Label text="✎Hàng chờ">
+                     <VBox.margin>
+                        <Insets top="15.0" />
+                     </VBox.margin>
+                  </Label>
+                  <TextField fx:id="txtSLHangCho" alignment="CENTER" editable="false" styleClass="c" stylesheets="@Style/Dashbroad.css" text="0">
+                     <font>
+                        <Font name="Cambria" size="13.0" />
+                     </font></TextField>
+                  <Label text="✎Tổng User ">
+                     <VBox.margin>
+                        <Insets top="5.0" />
+                     </VBox.margin>
+                  </Label>
+                  <TextField fx:id="txtTongUser" alignment="CENTER" editable="false" styleClass="c" stylesheets="@Style/Dashbroad.css" text="0">
+                     <font>
+                        <Font name="Cambria" size="13.0" />
+                     </font></TextField>
+                  <Label text="✎Đăng nhập hiện tại">
+                     <VBox.margin>
+                        <Insets top="5.0" />
+                     </VBox.margin>
+                  </Label>
+                  <TextField fx:id="txtDNHienTai" alignment="CENTER" editable="false" styleClass="c" stylesheets="@Style/Dashbroad.css" text="0">
+                     <font>
+                        <Font name="Cambria" size="13.0" />
+                     </font></TextField>
+                  <Label text="✎User cuối cùng">
+                     <VBox.margin>
+                        <Insets top="5.0" />
+                     </VBox.margin>
+                  </Label>
+                  <TextField alignment="CENTER" editable="false" promptText="Username" styleClass="text" stylesheets="@Style/Dashbroad.css">
+                     <font>
+                        <Font name="Cambria" size="13.0" />
+                     </font></TextField>
+                  <TextField alignment="CENTER" editable="false" promptText="Internet Protoco" styleClass="text" stylesheets="@Style/Dashbroad.css">
+                     <font>
+                        <Font name="Cambria" size="13.0" />
+                     </font></TextField>
+               </children>
+            </VBox>
+         </children>
+      </AnchorPane>
+   </center>
+   <bottom>
+      <AnchorPane prefHeight="110.0" prefWidth="790.0" BorderPane.alignment="CENTER">
+         <children>
+            <Group AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="8.0">
+               <children>
+                  <GridPane layoutY="17.0" prefHeight="63.0" prefWidth="258.0">
+                    <columnConstraints>
+                      <ColumnConstraints hgrow="SOMETIMES" maxWidth="212.0" minWidth="10.0" prefWidth="107.0" />
+                      <ColumnConstraints hgrow="SOMETIMES" maxWidth="273.0" minWidth="10.0" prefWidth="151.0" />
+                    </columnConstraints>
+                    <rowConstraints>
+                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                    </rowConstraints>
+                     <children>
+                        <Label prefHeight="18.0" prefWidth="182.0" text="☑ Số hiệu cổng" />
+                        <Label prefHeight="16.0" prefWidth="157.0" text="☑ Tên Server" GridPane.rowIndex="1" />
+                        <TextField fx:id="txtSoCong" prefHeight="30.0" text="10000" GridPane.columnIndex="1" />
+                        <TextField fx:id="txtNameServer" prefHeight="30.0" prefWidth="183.0" promptText="? Name" text="Bigbook" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                     </children>
+                  </GridPane>
+                  <Label text="✎ Thiết lập" />
+               </children>
+            </Group>
+            <Group layoutX="341.0" layoutY="15.0" AnchorPane.bottomAnchor="14.0" AnchorPane.leftAnchor="340.0" AnchorPane.topAnchor="8.0">
+               <children>
+                  <GridPane layoutY="17.0" prefHeight="63.0" prefWidth="302.0">
+                     <columnConstraints>
+                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="212.0" minWidth="10.0" prefWidth="176.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="273.0" minWidth="10.0" prefWidth="126.0" />
+                     </columnConstraints>
+                     <rowConstraints>
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                     </rowConstraints>
+                     <children>
+                        <Label prefHeight="18.0" prefWidth="182.0" text="☑ Số lượng đăng nhập tối đa" />
+                        <Label prefHeight="16.0" prefWidth="157.0" text="☑ Lượng hàng chời tối đa" GridPane.rowIndex="1" />
+                        <TextField fx:id="txtSLToiDa" prefHeight="30.0" text="50000" GridPane.columnIndex="1" />
+                        <TextField fx:id="txtHCToiDa" prefHeight="30.0" prefWidth="183.0" promptText="100000" text="100000" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                     </children>
+                  </GridPane>
+                  <Label text="✎ Thiết lập" />
+               </children>
+            </Group>
+            <Button id="thietlap" layoutX="662.0" layoutY="36.0" mnemonicParsing="false" onAction="#EvThietLap" prefHeight="45.0" prefWidth="104.0" stylesheets="@Style/Dashbroad.css" text="Thiết lập" textFill="WHITE" AnchorPane.bottomAnchor="29.0" AnchorPane.rightAnchor="24.0">
+               <font>
+                  <Font name="Cambria Bold" size="16.0" />
+               </font>
+            </Button>
+         </children>
+      </AnchorPane>
+   </bottom>
+</BorderPane>

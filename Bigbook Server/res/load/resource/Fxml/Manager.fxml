@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.text.*?>
+<?import java.lang.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+
+<StackPane prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.controller.Manager">
+   <children>
+      <BorderPane prefHeight="200.0" prefWidth="200.0">
+         <left>
+            <AnchorPane prefWidth="160.0" style="-fx-background-color: #000;" BorderPane.alignment="CENTER">
+               <BorderPane.margin>
+                  <Insets />
+               </BorderPane.margin>
+               <children>
+                  <VBox layoutX="4.099999904632568" prefHeight="550.0" prefWidth="160.0" spacing="10.0" AnchorPane.bottomAnchor="50.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                     <children>
+                        <Button mnemonicParsing="false" prefHeight="50.0" prefWidth="160.0" styleClass="Home" stylesheets="@Style/Style.css" text="Dashbroad">
+                           <graphic>
+                              <ImageView fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true" styleClass="Button">
+                                 <image>
+                                    <Image url="@../../../../../../../Desktop/Server/Dashbroad.png" />
+                                 </image></ImageView>
+                           </graphic>
+                        </Button>
+                        <Button mnemonicParsing="false" prefHeight="50.0" prefWidth="160.0" styleClass="Home" stylesheets="@Style/Style.css" text="Users">
+                           <graphic>
+                              <ImageView fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true" styleClass="Button">
+                                 <image>
+                                    <Image url="@../../../../../../../Desktop/Server/User.png" />
+                                 </image></ImageView>
+                           </graphic>
+                        </Button>
+                        <Button mnemonicParsing="false" prefHeight="50.0" prefWidth="160.0" styleClass="Home" stylesheets="@Style/Style.css" text="Capacity">
+                           <graphic>
+                              <ImageView fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true" styleClass="Button">
+                                 <image>
+                                    <Image url="@../../../../../../../Desktop/Server/Capacity.png" />
+                                 </image></ImageView>
+                           </graphic>
+                        </Button>
+                        <Button mnemonicParsing="false" prefHeight="50.0" prefWidth="160.0" styleClass="Home" stylesheets="@Style/Style.css" text="Document">
+                           <graphic>
+                              <ImageView fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true" styleClass="Button">
+                                 <image>
+                                    <Image url="@../../../../../../../Desktop/Server/Document.png" />
+                                 </image></ImageView>
+                           </graphic>
+                        </Button>
+                     </children>
+                     <padding>
+                        <Insets top="10.0" />
+                     </padding>
+                  </VBox>
+                  <Button layoutX="7.0" layoutY="545.0" mnemonicParsing="false" prefHeight="50.0" prefWidth="160.0" styleClass="Home" stylesheets="@Style/Style.css" text="Settings" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+                     <graphic>
+                        <ImageView fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true" styleClass="Button">
+                           <image>
+                              <Image url="@../../../../../../../Desktop/Server/Settings.png" />
+                           </image></ImageView>
+                     </graphic>
+                  </Button>
+               </children>
+            </AnchorPane>
+         </left>
+         <center>
+            <StackPane fx:id="stackNode" prefHeight="150.0" prefWidth="200.0" styleClass="control" stylesheets="@Style/Style.css" BorderPane.alignment="CENTER" />
+         </center>
+      </BorderPane>
+   </children>
+</StackPane>

@@ -1,0 +1,10 @@
+.Home{
+	-fx-background-color: transparent;
+	-fx-text-fill: #fff;
+	-fx-background-radius: 6px;
+	-fx-alignment: left;
+}
+
+.Home:hover{
+	-fx-background-color: #3abcbc;
+}
