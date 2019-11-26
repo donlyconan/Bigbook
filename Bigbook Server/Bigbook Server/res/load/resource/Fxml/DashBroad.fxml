@@ -28,28 +28,28 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.shape.Circle?>
 
-<BorderPane xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.controller.DashbroadController">
+<BorderPane prefHeight="531.0" prefWidth="799.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.controller.DashbroadController">
    <top>
       <AnchorPane fx:id="dash" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="64.0" prefWidth="780.0" BorderPane.alignment="CENTER">
          <children>
             <HBox alignment="CENTER_LEFT" layoutX="187.0" layoutY="17.0" prefHeight="32.0" prefWidth="515.0" spacing="5.0" AnchorPane.leftAnchor="180.0" AnchorPane.rightAnchor="85.0" AnchorPane.topAnchor="15.0">
                <children>
                   <Label prefHeight="18.0" prefWidth="114.0" style="-fx-font-size: 14;" text="Thời gian hiện tại" />
-                  <TextField fx:id="txtTimeNow" editable="false" prefHeight="32.0" prefWidth="194.0" styleClass="text" stylesheets="@Style/Dashbroad.css" text="20/10/2019 04:30" />
+                  <TextField fx:id="txtTimeNow" alignment="CENTER" editable="false" prefHeight="32.0" prefWidth="150.0" styleClass="text" stylesheets="@Style/Dashbroad.css" text="20/10/2019 04:30" />
                   <Label style="-fx-font-size: 14;" text="IP Server">
                      <HBox.margin>
                         <Insets left="20.0" />
                      </HBox.margin>
                   </Label>
-                  <TextField fx:id="txtIP" editable="false" prefHeight="32.0" prefWidth="116.0" style="-fx-font-size: 14;" styleClass="text" stylesheets="@Style/Dashbroad.css" text="192.168.1.150" />
+                  <TextField fx:id="txtIP" alignment="CENTER" editable="false" prefHeight="32.0" prefWidth="127.0" style="-fx-font-size: 14;" styleClass="text" stylesheets="@Style/Dashbroad.css" text="192.168.1.150" />
                </children>
             </HBox>
-            <Label layoutX="14.0" layoutY="13.0" style="-fx-text-fill: #000; -fx-font-size: 30;" text="Dashbroad" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="10.0" />
+            <Label layoutX="14.0" layoutY="13.0" style="-fx-text-fill: #000; -fx-font-size: 30; -fx-font-weight: bold;" text="Dashbroad" AnchorPane.leftAnchor="2.0" AnchorPane.topAnchor="2.0" />
             <Button id="btexit" layoutX="725.0" layoutY="1.0" maxHeight="-Infinity" maxWidth="-Infinity" minWidth="30.0" mnemonicParsing="false" onAction="#TurnOFFServer" prefHeight="40.0" prefWidth="40.0" stylesheets="@Style/Dashbroad.css" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                <graphic>
                   <ImageView fitHeight="35.0" fitWidth="42.0" pickOnBounds="true" preserveRatio="true" styleClass="Style\Dashbroad.css">
                      <image>
-                        <Image url="@../../../../../../../Desktop/Server/Exit.png" />
+                        <Image url="@../../../../../../../../Desktop/ImageView/Close.png" />
                      </image>
                   </ImageView>
                </graphic>
@@ -70,7 +70,7 @@
             </LineChart>
             <VBox prefHeight="357.0" prefWidth="208.0" spacing="5.0" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="0.0">
                <children>
-                  <Label alignment="CENTER" prefHeight="28.0" prefWidth="230.0" style="-fx-font-size: 20;" text="Hàng chờ" />
+                  <Label alignment="CENTER" prefHeight="28.0" prefWidth="230.0" style="-fx-font-size: 18;" text="Hàng chờ" />
                   <Label text="✎Hàng chờ">
                      <VBox.margin>
                         <Insets top="15.0" />

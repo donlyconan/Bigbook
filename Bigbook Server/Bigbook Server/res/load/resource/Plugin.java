@@ -11,7 +11,7 @@ public class Plugin
 {
 	public static final String ROOT_PATH = "Fxml\\";
 	public static final String ROOT_FILE = "File\\";
-	static final Hashtable<Object, Object> DATA_SHARE = new Hashtable<Object, Object>();
+	static final Hashtable<String, Object> DATA_SHARE = new Hashtable<String, Object>();
 
 	static 
 	{
@@ -35,6 +35,6 @@ public class Plugin
 		return Plugin.class.getResourceAsStream("Icon\\" + pathname);
 	}
 
-	public static Hashtable<Object, Object> getDataShare( ) { return DATA_SHARE; }
+	public static Hashtable<String, Object> getDataShare( ) { return DATA_SHARE; }
 
 }

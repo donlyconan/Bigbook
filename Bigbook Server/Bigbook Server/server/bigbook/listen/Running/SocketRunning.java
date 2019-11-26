@@ -31,14 +31,19 @@ public class SocketRunning extends Thread implements Work
 	public void run( ) {
 		try {
 			Message sms = (Message) Recieve();
-			
+			Handle(sms);
 		} catch (Exception e) {
-			// TODO: handle exception
+			e.printStackTrace();
 		} finally {
 			try {
 				Close();
 			} catch (Exception e) {}
 		}
+	}
+	
+	public void Handle(Message mes)
+	{
+		
 	}
 
 	@Override

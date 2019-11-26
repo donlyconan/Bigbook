@@ -7,7 +7,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="750.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="550.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
    <left>
       <ToolBar orientation="VERTICAL" prefHeight="471.0" prefWidth="109.0" BorderPane.alignment="CENTER">
         <items>
@@ -79,6 +79,8 @@
         <menus>
           <Menu mnemonicParsing="false" text="File">
             <items>
+                  <MenuItem mnemonicParsing="false" text="Start" />
+                  <MenuItem mnemonicParsing="false" text="Stop" />
                   <MenuItem mnemonicParsing="false" text="Restart" />
                   <MenuItem mnemonicParsing="false" text="Hiden" />
               <MenuItem mnemonicParsing="false" text="Close" />
@@ -86,6 +88,7 @@
           </Menu>
           <Menu mnemonicParsing="false" text="Manager">
             <items>
+                  <MenuItem mnemonicParsing="false" text="User Online" />
                   <MenuItem mnemonicParsing="false" text="Statistics" />
               <MenuItem mnemonicParsing="false" text="Delete" />
             </items>
