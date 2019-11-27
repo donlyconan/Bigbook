@@ -2,7 +2,6 @@ package bigbook.service;
 
 import java.sql.Time;
 
-import bigbook.Platform.Platform;
 import bigbook.Platform.Transfer;
 
 public class Message implements Transfer
@@ -20,11 +19,6 @@ public class Message implements Transfer
 		this.code = code;
 		this.reciever = reciever;
 		this.content = content;
-	}
-
-	public Message()
-	{
-		code = Platform.MSxSERVER;
 	}
 
 	public Message(int code, String sender, String reciever, String content)
@@ -54,5 +48,4 @@ public class Message implements Transfer
 	public Time getTime( ) { return time; }
 
 	public void setTime( Time time) { this.time = time; }
-	
 }

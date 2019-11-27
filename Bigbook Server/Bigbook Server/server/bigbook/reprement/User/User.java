@@ -1,11 +1,12 @@
 package bigbook.reprement.User;
 
+import java.io.Serializable;
 import java.sql.Date;
 
 import bigbook.reprement.Account;
 import javafx.scene.image.Image;
 
-public class User extends Account
+public class User extends Account implements Serializable
 {
 	private static final long serialVersionUID = 1L;
 	private Image profit;
@@ -30,10 +31,10 @@ public class User extends Account
 		this.email = email;
 	}
 	
-	@Override
-	public boolean Checked(Object object) { return false; }
+	public String getName() {return firstname + " " + midname + " " + lastname;}
 	
 	public String getFirstname() { return firstname; }
+	
 	
 	public void setFirstname(String firstname) { this.firstname = firstname; }
 	
@@ -71,8 +72,5 @@ public class User extends Account
 
 	public Image getProfit( ) { return profit; }
 
-	public void setProfit( Image profit) { this.profit = profit; }
-	
-	
-	
+	public void setProfit( Image profit) { this.profit = profit; }	
 }

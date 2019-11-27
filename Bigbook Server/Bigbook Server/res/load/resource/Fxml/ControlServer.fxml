@@ -16,7 +16,7 @@
                   <Font name="Cambria" size="13.0" />
                </font>
                <graphic>
-                  <ImageView fitHeight="35.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
+                  <ImageView fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true">
                      <image>
                         <Image url="@../Icon/dashbroad.png" />
                      </image>
@@ -28,7 +28,7 @@
                   <Font name="Cambria" size="13.0" />
                </font>
                <graphic>
-                  <ImageView fitHeight="35.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
+                  <ImageView fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true">
                      <image>
                         <Image url="@../Icon/management.png" />
                      </image>
@@ -40,7 +40,7 @@
                   <Font name="Cambria" size="13.0" />
                </font>
                <graphic>
-                  <ImageView fitHeight="35.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
+                  <ImageView fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true">
                      <image>
                         <Image url="@../Icon/setting.png" />
                      </image>
@@ -52,7 +52,7 @@
                   <Font name="Cambria" size="13.0" />
                </font>
                <graphic>
-                  <ImageView fitHeight="35.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
+                  <ImageView fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true">
                      <image>
                         <Image url="@../Icon/systemfile.png" />
                      </image>
@@ -64,7 +64,7 @@
                   <Font name="Cambria" size="13.0" />
                </font>
                <graphic>
-                  <ImageView fitHeight="35.0" fitWidth="35.0" pickOnBounds="true" preserveRatio="true">
+                  <ImageView fitHeight="40.0" fitWidth="40.0" pickOnBounds="true" preserveRatio="true">
                      <image>
                         <Image url="@../Icon/power.png" />
                      </image>
@@ -88,9 +88,10 @@
           </Menu>
           <Menu mnemonicParsing="false" text="Manager">
             <items>
-                  <MenuItem mnemonicParsing="false" text="User Online" />
+                  <MenuItem mnemonicParsing="false" text="Groups" />
+                  <MenuItem mnemonicParsing="false" text="Users" />
                   <MenuItem mnemonicParsing="false" text="Statistics" />
-              <MenuItem mnemonicParsing="false" text="Delete" />
+              <MenuItem mnemonicParsing="false" text="Files" />
             </items>
           </Menu>
             <Menu mnemonicParsing="false" text="Window">

@@ -1,10 +1,9 @@
 package bigbook.reprement;
 
-import bigbook.Platform.Represent;
+import bigbook.Platform.Platform;
 
-public abstract class Account implements Represent
+public abstract class Account implements Platform
 {
-	private static final long serialVersionUID = 1L;
 	private String username;
 	private String password;
 
@@ -14,8 +13,9 @@ public abstract class Account implements Represent
 		this.password = password;
 	}
 
-	@Override
-	public boolean Checked(Object object) { return true; }
+	public static boolean Checked(String username, String password) {
+		return true;
+	}
 	
 	public String getUsername() { return username; }
 	

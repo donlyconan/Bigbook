@@ -3,19 +3,13 @@ package bigbook.listen.Running;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
-import java.util.Hashtable;
 
 import bigbook.Platform.Work;
-import bigbook.listen.Listen;
-import bigbook.reprement.Group.Group;
 import bigbook.service.Message;
 
 public class SocketRunning extends Thread implements Work
 {
 	private static final long serialVersionUID = 1L;
-	private static final Hashtable<String, SocketRunning> USER_ONLINE = Listen.getUserOnline();
-	private static final Hashtable<String, Group> GROUP_IDS = Listen.getGroupId();
-
 	private Socket client;
 	private ObjectInputStream ois;
 	private ObjectOutputStream oos;
@@ -24,7 +18,7 @@ public class SocketRunning extends Thread implements Work
 	{
 		super();
 		this.client = client;
-		Start();
+		this.Start();
 	}
 
 	@Override
@@ -40,10 +34,9 @@ public class SocketRunning extends Thread implements Work
 			} catch (Exception e) {}
 		}
 	}
-	
-	public void Handle(Message mes)
-	{
-		
+
+	public void Handle( Message mes) {
+
 	}
 
 	@Override
@@ -59,9 +52,10 @@ public class SocketRunning extends Thread implements Work
 		this.start();
 	}
 
+	@SuppressWarnings( "deprecation" )
 	@Override
 	public void Stop( ) throws Exception {
-		this.Stop();
+		this.stop();
 		oos.close();
 		ois.close();
 	}

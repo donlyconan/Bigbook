@@ -1,8 +1,17 @@
 package bigbook.Platform;
 
+import java.util.Hashtable;
+
+import bigbook.listen.Running.SocketRunning;
+import bigbook.reprement.Group.Group;
 
 //Nền tảng ứng dụng
 public interface Platform {
+	//Trung tâm dữ liệu
+	public static final Hashtable<String, Object> DATA_SHARE = new Hashtable<String, Object>();
+	public static final Hashtable<String, SocketRunning> USER_ONLINE = new Hashtable<String, SocketRunning>();
+	public static final Hashtable<String, Group> GROUP_ID = new Hashtable<String, Group>();
+
 	/*
 	 * Cấu trúc lệnh:
 	 * CM: Command 
@@ -45,7 +54,5 @@ public interface Platform {
 	//Tai khoan hoac mat khau khong chinh xac
 	public static final int MSxUSERorPASS_NOTEXCULY = 208;
 	
-	
 	public static void start(Runnable run) throws Exception {new Thread(run).start();}
-	
 }

@@ -17,12 +17,6 @@ public class Listen extends Thread implements Kernel
 	public static final int PORT = 8888;
 	public static final String SERVER_IP = "localhost";
 
-	/*
-	 * Cấu trúc chương trình
-	 */
-	private static final Hashtable<String, SocketRunning> USER_ONLINE = new Hashtable<String, SocketRunning>();
-	private static final Hashtable<String, Group> GROUP_ID = new Hashtable<String, Group>();
-
 	// Phân chia nhánh
 	private int maxLogin;
 	private int sleep = 20;

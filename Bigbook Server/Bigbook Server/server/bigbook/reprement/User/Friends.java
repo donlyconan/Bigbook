@@ -1,20 +1,18 @@
 package bigbook.reprement.User;
 
-import bigbook.Platform.Represent;
-import javafx.collections.ObservableMap;
+import java.io.Serializable;
+import java.util.Hashtable;
 
-public class Friends implements Represent
+import bigbook.Platform.Platform;
+
+public class Friends implements Platform, Serializable
 {
 	private static final long serialVersionUID = 1L;
-	
 	private String iduser;
-	private ObservableMap<String,User> friend;
+	private Hashtable<String,User> friend;
 	
-	/**
-	 * @param iduser
-	 * @param friend
-	 */
-	public Friends(String iduser, ObservableMap<String,User> friend)
+	
+	public Friends(String iduser, Hashtable<String,User> friend)
 	{
 		this.iduser = iduser;
 		this.friend = friend;
@@ -24,12 +22,7 @@ public class Friends implements Represent
 	
 	public void setIduser(String iduser) { this.iduser = iduser; }
 	
-	public ObservableMap<String,User> getFriend() { return friend; }
-	
-	public void setFriend(ObservableMap<String,User> friend) { this.friend = friend; }
+	public Hashtable<String, User> getFriend( ) { return friend; }
 
-	@Override
-	public boolean Checked(Object object) { // TODO Auto-generated method stub
-	return false; }
-	
+	public void setFriend( Hashtable<String, User> friend) { this.friend = friend; }
 }
