@@ -31,7 +31,8 @@ public class Listen extends Thread implements Kernel
 	}
 
 	@Override
-	public void run( ) {
+	public void run( )
+	{
 		while (!server.isClosed()) {
 			if (queue.size() > 0 && USER_ONLINE.size() < maxLogin) {
 				Socket socket = queue.peek();
@@ -58,7 +59,8 @@ public class Listen extends Thread implements Kernel
 	}
 
 	@Override
-	public void Start( ) throws Exception {
+	public void Start( ) throws Exception
+	{
 		this.start();
 		while (!server.isClosed()) {
 			try {
@@ -72,7 +74,8 @@ public class Listen extends Thread implements Kernel
 	}
 
 	@Override
-	public void Restart( ) throws Exception {
+	public void Restart( ) throws Exception
+	{
 		// Lam sach
 		Stop();
 		USER_ONLINE.clear();
@@ -89,7 +92,8 @@ public class Listen extends Thread implements Kernel
 
 	@SuppressWarnings( "deprecation" )
 	@Override
-	public void Stop( ) throws Exception {
+	public void Stop( ) throws Exception
+	{
 		stop();
 		for (Work item : USER_ONLINE.values()) {
 			item.Stop();
@@ -99,34 +103,47 @@ public class Listen extends Thread implements Kernel
 	}
 
 	@Override
-	public void Close( ) throws Exception {
+	public void Close( ) throws Exception
+	{
 		for (Work item : USER_ONLINE.values())
 			item.Close();
 		server.close();
 	}
 
-	public int getMaxLogin( ) { return maxLogin; }
+	public int getMaxLogin( )
+	{ return maxLogin; }
 
-	public void setMaxLogin( int maxLogin) { this.maxLogin = maxLogin; }
+	public void setMaxLogin( int maxLogin)
+	{ this.maxLogin = maxLogin; }
 
-	public int getSleep( ) { return sleep; }
+	public int getSleep( )
+	{ return sleep; }
 
-	public void setSleep( int sleep) { this.sleep = sleep; }
+	public void setSleep( int sleep)
+	{ this.sleep = sleep; }
 
-	public ServerSocket getServer( ) { return server; }
+	public ServerSocket getServer( )
+	{ return server; }
 
-	public void setServer( ServerSocket server) { this.server = server; }
+	public void setServer( ServerSocket server)
+	{ this.server = server; }
 
-	public Queue<Socket> getQueue( ) { return queue; }
+	public Queue<Socket> getQueue( )
+	{ return queue; }
 
-	public void setQueue( Queue<Socket> queue) { this.queue = queue; }
+	public void setQueue( Queue<Socket> queue)
+	{ this.queue = queue; }
 
-	public static int getPort( ) { return PORT; }
+	public static int getPort( )
+	{ return PORT; }
 
-	public static String getServerIp( ) { return SERVER_IP; }
+	public static String getServerIp( )
+	{ return SERVER_IP; }
 
-	public static Hashtable<String, SocketRunning> getUserOnline( ) { return USER_ONLINE; }
+	public static Hashtable<String, SocketRunning> getUserOnline( )
+	{ return USER_ONLINE; }
 
-	public static Hashtable<String, Group> getGroupId( ) { return GROUP_ID; }
+	public static Hashtable<String, Group> getGroupId( )
+	{ return GROUP_ID; }
 
 }
