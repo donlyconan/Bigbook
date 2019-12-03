@@ -12,7 +12,6 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.ButtonType;
 
-@SuppressWarnings( "null" )
 public class ConnectSQL {
 	private static String DATABASE_NAME = "";
 	private static String USER = "";
@@ -24,13 +23,20 @@ public class ConnectSQL {
 	{
 		Properties prop = new Properties();
 		FileInputStream fis = null;
+		try
+		{
+			Class.forName("");
+		} catch (ClassNotFoundException e1)
+		{
+			e1.printStackTrace();
+		}
+		
 		try {
 			fis = new FileInputStream(new File("Data\\Properties\\Database.pro"));
 			prop.load(fis);
 			DATABASE_NAME = prop.getProperty("database");
 			USER = prop.getProperty("user");
 			PASSWORD = prop.getProperty("password");
-			Class.forName("");
 		} catch (Exception e) {
 			Alert noti = new Alert(AlertType.ERROR, "Error! load files: " + e.getMessage(), ButtonType.CLOSE);
 			noti.setTitle("System");

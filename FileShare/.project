@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>Api-Handle [Server]</name>
+	<name>FileShare</name>
 	<comment></comment>
 	<projects>
 	</projects>
@@ -14,11 +14,4 @@
 	<natures>
 		<nature>org.eclipse.jdt.core.javanature</nature>
 	</natures>
-	<linkedResources>
-		<link>
-			<name>scc</name>
-			<type>2</type>
-			<location>C:/Users/donly/Desktop/netty-socketio-master (1)/netty-socketio-master/src</location>
-		</link>
-	</linkedResources>
 </projectDescription>

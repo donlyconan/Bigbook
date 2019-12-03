@@ -1,8 +1,9 @@
 package bigbook.listen;
 
 import java.io.IOException;
-import java.net.ServerSocket;
-import java.net.Socket;
+import java.net.InetSocketAddress;
+import java.nio.channels.ServerSocketChannel;
+import java.nio.channels.SocketChannel;
 import java.util.Hashtable;
 import java.util.LinkedList;
 import java.util.Queue;
@@ -20,27 +21,28 @@ public class Listen extends Thread implements Kernel
 	// Phân chia nhánh
 	private int maxLogin;
 	private int sleep = 20;
-	private ServerSocket server;
-	private Queue<Socket> queue;
+	private ServerSocketChannel server;
+	private Queue<SocketChannel> queue;
 
 	public Listen( int Port ) throws IOException
 	{
-		server		= new ServerSocket(Port);
-		queue		= new LinkedList<Socket>();
+		server		= ServerSocketChannel.open();
+		InetSocketAddress inet = new InetSocketAddress("localhost",Port);
+		server.socket().bind(inet);
+		queue		= new LinkedList<SocketChannel>();
 		maxLogin	= 50000;
 	}
 
 	@Override
 	public void run( )
 	{
-		while (!server.isClosed()) {
+		while (server.isOpen()) {
 			if (queue.size() > 0 && USER_ONLINE.size() < maxLogin) {
-				Socket socket = queue.peek();
-				if (!socket.isClosed()) {
-					SocketRunning run;
+				SocketChannel socket = queue.peek();
+				if (socket.isOpen()) {
 					try {
-						run = new SocketRunning(socket);
-						run.start();
+//						run = new SocketRunning(new Socket(socket);
+//						run.start();
 					} catch (Exception e) {
 						e.printStackTrace();
 					}
@@ -62,9 +64,9 @@ public class Listen extends Thread implements Kernel
 	public void Start( ) throws Exception
 	{
 		this.start();
-		while (!server.isClosed()) {
+		while (server.isOpen()) {
 			try {
-				Socket con = server.accept();
+				SocketChannel con = server.accept();
 				System.out.println("Accept connect!");
 				queue.add(con);
 			} catch (Exception e) {
@@ -84,8 +86,8 @@ public class Listen extends Thread implements Kernel
 		// Khoi dong lai
 		maxLogin	= 50000;
 		sleep		= 20;
-		server		= new ServerSocket(PORT);
-		queue		= new LinkedList<Socket>();
+//		server		= new ServerSocket(PORT);
+//		queue		= new LinkedList<Socket>();
 		maxLogin	= 50000;
 		Start();
 	}
@@ -121,18 +123,6 @@ public class Listen extends Thread implements Kernel
 
 	public void setSleep( int sleep)
 	{ this.sleep = sleep; }
-
-	public ServerSocket getServer( )
-	{ return server; }
-
-	public void setServer( ServerSocket server)
-	{ this.server = server; }
-
-	public Queue<Socket> getQueue( )
-	{ return queue; }
-
-	public void setQueue( Queue<Socket> queue)
-	{ this.queue = queue; }
 
 	public static int getPort( )
 	{ return PORT; }
