@@ -1,4 +1,4 @@
-package Parent;
+package server.parent;
 
 public interface Platform
 {

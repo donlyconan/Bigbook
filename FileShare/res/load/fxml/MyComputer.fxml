@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <AnchorPane prefHeight="0.0" prefWidth="1000.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+         <children>
+            <Label fx:id="lbFile" layoutY="12.0" prefHeight="18.0" prefWidth="751.0" text="Path://" textFill="#0b757c" AnchorPane.bottomAnchor="2.0" AnchorPane.leftAnchor="2.0" AnchorPane.rightAnchor="247.0" AnchorPane.topAnchor="2.0">
+               <font>
+                  <Font name="Cambria" size="13.0" />
+               </font>
+               <BorderPane.margin>
+                  <Insets left="5.0" />
+               </BorderPane.margin>
+               <HBox.margin>
+                  <Insets right="100.0" />
+               </HBox.margin>
+            </Label>
+            <ProgressBar fx:id="progressp" layoutX="765.0" layoutY="3.0" prefHeight="18.0" prefWidth="195.0" progress="1.0" AnchorPane.bottomAnchor="1.0" AnchorPane.rightAnchor="40.0" AnchorPane.topAnchor="3.0" />
+            <Text fill="RED" layoutX="846.0" layoutY="14.0" strokeType="OUTSIDE" strokeWidth="0.0" text="100%" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="2.0" />
+         </children>
+      </AnchorPane>
+      <SplitPane dividerPositions="0.21309963099630996" AnchorPane.bottomAnchor="25.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <items>
+            <SplitPane dividerPositions="0.5" orientation="VERTICAL" prefHeight="578.0" prefWidth="222.0">
+               <items>
+                  <TreeView fx:id="myTree" prefHeight="303.0" prefWidth="519.0" style="-fx-family: 'Cambria'; -fx-font-size: 13;" />
+                  <TreeView fx:id="myTree1" prefHeight="303.0" prefWidth="519.0" style="-fx-family: 'Cambria'; -fx-font-size: 13;" />
+               </items>
+            </SplitPane>
+            <AnchorPane prefHeight="575.0" prefWidth="856.0">
+               <children>
+                  <Button fx:id="search" contentDisplay="GRAPHIC_ONLY" layoutX="407.0" layoutY="2.0" mnemonicParsing="false" onAction="#EV_Button" prefHeight="35.0" prefWidth="43.0" style="-fx-background-color: transparent;" text="Search" AnchorPane.leftAnchor="407.0" AnchorPane.topAnchor="2.0">
+                     <font>
+                        <Font name="Cambria" size="13.0" />
+                     </font>
+                  </Button>
+                  <Label layoutX="22.0" layoutY="18.0" prefHeight="18.0" prefWidth="55.0" text="Search" AnchorPane.leftAnchor="10.0" AnchorPane.topAnchor="10.0">
+                     <font>
+                        <Font name="Cambria" size="14.0" />
+                     </font>
+                  </Label>
+                  <TextField fx:id="txtSearch" layoutX="149.0" layoutY="106.0" prefHeight="29.0" prefWidth="389.0" promptText="Search content?" style="-fx-background-color: transparent; -fx-border-color: #000;" AnchorPane.leftAnchor="60.0" AnchorPane.topAnchor="5.0">
+                     <font>
+                        <Font name="Cambria" size="13.0" />
+                     </font>
+                  </TextField>
+                  <TabPane layoutX="10.0" layoutY="43.0" prefHeight="502.0" prefWidth="778.0" tabClosingPolicy="UNAVAILABLE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="40.0">
+                     <tabs>
+                        <Tab text="Untitled Tab 1" />
+                        <Tab text="Untitled Tab 2" />
+                     </tabs>
+                  </TabPane>
+               </children>
+            </AnchorPane>
+         </items>
+      </SplitPane>
+   </children>
+</AnchorPane>

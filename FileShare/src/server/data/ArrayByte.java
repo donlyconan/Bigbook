@@ -1,4 +1,4 @@
-package data;
+package server.data;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -8,19 +8,19 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.List;
 
-import Element.FileView;
-import Parent.Platform;
+import server.element.FileItem;
+import server.parent.Platform;
 
-public class Transfer implements Serializable, Platform
+public class ArrayByte implements Serializable, Platform
 {
 	private static final long serialVersionUID = 1L;
 	private Object code;
 	private String sender;
 	private byte[] buff;
-	private List<FileView> lis;
+	private List<FileItem> lis;
 	private int status;
 
-	public Transfer( String sender, Object code, byte[] buff )
+	public ArrayByte( String sender, Object code, byte[] buff )
 	{
 		super();
 		this.sender	= sender;
@@ -30,7 +30,7 @@ public class Transfer implements Serializable, Platform
 	}
 	
 
-	public Transfer( Object code )
+	public ArrayByte( Object code )
 	{
 		super();
 		this.code = code;
@@ -38,14 +38,14 @@ public class Transfer implements Serializable, Platform
 
 
 
-	public Transfer( Object code, byte[] buff )
+	public ArrayByte( Object code, byte[] buff )
 	{
 		super();
 		this.code	= code;
 		this.buff	= buff;
 	}
 
-	public Transfer( Object code, byte[] buff, int status )
+	public ArrayByte( Object code, byte[] buff, int status )
 	{
 		super();
 		this.code	= code;
@@ -75,7 +75,7 @@ public class Transfer implements Serializable, Platform
 		return baos.toByteArray();
 	}
 
-	public static Object toMessage( byte[] arr) throws ClassNotFoundException, IOException
+	public static Object getObject( byte[] arr) throws ClassNotFoundException, IOException
 	{
 		ByteArrayInputStream bais = new ByteArrayInputStream(arr);
 		ObjectInputStream ois = new ObjectInputStream(bais);
@@ -97,7 +97,7 @@ public class Transfer implements Serializable, Platform
 	public void setCode( Object code)
 	{ this.code = code; }
 
-	public byte[] getBuff( )
+	public byte[] getData( )
 	{ return buff; }
 
 	public void setBuff( byte[] buff)
@@ -110,11 +110,11 @@ public class Transfer implements Serializable, Platform
 	{ this.status = status; }
 
 
-	public List<FileView> getItem( )
+	public List<FileItem> getItem( )
 	{ return lis; }
 
 
-	public void setItem( List<FileView> lisItem)
+	public void setItem( List<FileItem> lisItem)
 	{ this.lis = lisItem; }
 	
 	

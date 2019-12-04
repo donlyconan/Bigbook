@@ -1,20 +1,14 @@
-package data;
+package server.data;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
 import java.util.List;
 
-import Element.FileView;
-import Element.ItemView;
-import Element.Load;
-import Element.Notification;
-import Parent.Platform.CMD;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
@@ -24,6 +18,10 @@ import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
 import javafx.scene.image.ImageView;
 import load.LoadResource;
+import server.element.FileItem;
+import server.element.Load;
+import server.element.Notification;
+import server.parent.Platform.CMD;
 
 public class SystemRunning extends Thread
 {
@@ -57,40 +55,28 @@ public class SystemRunning extends Thread
 		ObservableList<Node> lis = (ObservableList<Node>) LoadResource.ShareData().get("list");
 		final TextField txtName = (TextField) LoadResource.ShareData().get("name");
 		final TextField yourIP = (TextField) LoadResource.ShareData().get("your");
-		final TreeView<FileView> tree = (TreeView<FileView>) LoadResource.ShareData().get("tree");
-		final TreeView<FileView> mytree = (TreeView<FileView>) LoadResource.ShareData().get("mytree");
+		final TreeView<FileItem> tree = (TreeView<FileItem>) LoadResource.ShareData().get("tree");
+		final TreeView<FileItem> mytree = (TreeView<FileItem>) LoadResource.ShareData().get("mytree");
 		ImageView image = (ImageView) LoadResource.ShareData().get("image");
-		Transfer data = null;
-		TreeItem<FileView> item = null;
-		List<FileView> lisItem = null;
+		ArrayByte data = null;
+		TreeItem<FileItem> item = null;
+		List<FileItem> lisItem = null;
 		final ProgressIndicator progress = (ProgressIndicator) LoadResource.ShareData().get("progress");
 		while (!ds.isClosed())
 		{
 			try
 			{
-				Transfer sms = (Transfer) send.read();
+				ArrayByte sms = (ArrayByte) send.read();
 				Object key = sms.getCode();
 				switch (key.toString())
 					{
-						case "MSxMessage":
-							Platform.runLater(()->{
-								try
-								{
-									String mes = new String(sms.getBuff(), "UTF-8");
-									lis.add(new ItemView(sms.getSender(), mes, false).getContent());
-								} catch (UnsupportedEncodingException e)
-								{
-									e.printStackTrace();
-								}
-							});
-							break;
 						case "MSxSendxConnect":
-							String temp = new String(sms.getBuff(), "UTF-8");
+							String temp = new String(sms.getData(), "UTF-8");
 							Platform.runLater(()-> {
 								if(Notification.showYESNO(temp + " đang kết nối đến bạn!"))
 								{
 									yourIP.setText(temp);
-									Transfer tran = new Transfer(CMD.MSxAcceptxConnect, "TRUE".getBytes());
+									ArrayByte tran = new ArrayByte(CMD.MSxAcceptxConnect, "TRUE".getBytes());
 									try
 									{
 										send.send(tran.toByteArray());
@@ -103,13 +89,13 @@ public class SystemRunning extends Thread
 							break;
 						case "MSxAcceptxConnect":
 							image.setImage(LoadResource.loadImage("icon\\online.png"));
-							Transfer tran = new Transfer(CMD.MSxConnectxSuccess,
+							ArrayByte tran = new ArrayByte(CMD.MSxConnectxSuccess,
 									(txtName.getText() + " has connected!").getBytes("UTF-8"));
 							send.send(tran.toByteArray());
 							break;
 
 						case "MSxGetIP":
-							text = new String(sms.getBuff());
+							text = new String(sms.getData());
 							yourIP.setText(getMessage(text));
 							break;
 						case "MSxResponexItem":
@@ -117,16 +103,9 @@ public class SystemRunning extends Thread
 							Load.FillData(item, sms.getItem());
 							tree.refresh();
 							break;
-						case "MSxRequestxItem":
-							item = tree.getSelectionModel().getSelectedItem();
-							lisItem = Load.getItemFileView(item.getValue().getFile().listFiles());
-							data = new Transfer(CMD.MSxResponexItem);
-							data.setItem(lisItem);
-							send.send(data.toByteArray());
-							break;
 						case "MSxOpenLoad":
-							lisItem = Load.getItemFileView(File.listRoots());
-							data = new Transfer(CMD.MSxResponexItem);
+//							lisItem = Load.getItemFileView(File.listRoots());
+							data = new ArrayByte(CMD.MSxResponexItem);
 							data.setItem(lisItem);
 							send.send(data.toByteArray());
 							break;
@@ -138,12 +117,12 @@ public class SystemRunning extends Thread
 //							break;
 
 						case "MSxFilexOpen":
-							info = (FileInfo) Transfer.toMessage(sms.getBuff());
+							info = (FileInfo) ArrayByte.getObject(sms.getData());
 							fos = new FileOutputStream(info.getPath());
 							item = tree.getSelectionModel().getSelectedItem();
 							progress.setProgress(0.0);
 							index = 1;
-							TreeItem<FileView> tempx = new TreeItem<FileView>(new FileView(new File(info.getPath())),Load.getIconFile());
+							TreeItem<FileItem> tempx = new TreeItem<FileItem>(new FileItem(new File(info.getPath())),Load.getIconFile());
 							if(!item.getChildren().contains(tempx))
 								item.getChildren().add(tempx);
 							tree.refresh();
@@ -152,7 +131,7 @@ public class SystemRunning extends Thread
 						case "MSxFilexSending":
 							try
 							{
-								fos.write(sms.getBuff());
+								fos.write(sms.getData());
 								Platform.runLater(()->progress.setProgress((double)index++/info.getPart()));
 							} catch (Exception e)
 							{
@@ -169,11 +148,11 @@ public class SystemRunning extends Thread
 							{}
 							break;
 						case "MSxOpenGiveFile":
-							FileInfo fi = (FileInfo) Transfer.toMessage(sms.getBuff());
+							FileInfo fi = (FileInfo) ArrayByte.getObject(sms.getData());
 							progress.setProgress(0.0);
 							index = 0;
 							info = fi;
-							Parent.Platform.start(()->{
+							server.parent.Platform.start(()->{
 								try
 								{
 									send.give(fi, new File(sms.getSender()));

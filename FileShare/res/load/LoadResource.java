@@ -1,6 +1,7 @@
 package load;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Hashtable;
 
 import javafx.fxml.FXMLLoader;
@@ -36,6 +37,11 @@ public class LoadResource
 			e.printStackTrace();
 			System.exit(0);
 		}
+	}
+	
+	public static InputStream getInputStream(String path)
+	{
+		return LoadResource.class.getResourceAsStream(path);
 	}
 
 	public static Hashtable<String, Object> ShareData( ) { return SHARE_DATA; }	
