@@ -35,40 +35,16 @@ public interface Platform {
 	}
 	
 	public static enum Noti{
-		ACCxNOTEXIT, 
-		LGxISCORRECT, 
-		LGxLoginSuccess
+		NTxAccountNotExist,
+		NTxAccOrPasswordIncorrect,
+		NTxLoginIncorrect, 
+		NTxLoginSuccess
 	}
 	
 	public static enum Error
 	{
 		//Lỗi nghiêm trọng
-		 ER0x00001, 
-		 ER0x00002,
-		 ER0x00003,
-		 ER0x00004,
-		 ER0x10001,
-		 ER0x10002,
-		 ER0x10003,
-		 ER0x10004,
-		 
-		 //Lỗi có thể khắc phục
-		 ER0x20001,
-		 ER0x20002,
-		 ER0x20003,
-		 ER0x20004,
-		 
-		 //Lỗi nhẹ
-		 ER0x30001,
-		 ER0x30002,
-		 ER0x30003,
-		 ER0x30004,
-		 
-		 //Có thể bỏ qua
-		 ER0x40001,
-		 ER0x40002,
-		 ER0x40003,
-		 ER0x40004
+		 ER0x0001, ER0x0002,ER0x0003,ER0x0004, ER0x1001, ER0x1002, ER0x1003,ER0x1004
 	}
 
 	public static Thread start(Runnable run){

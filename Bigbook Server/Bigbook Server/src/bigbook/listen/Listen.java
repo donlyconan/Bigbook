@@ -66,8 +66,9 @@ public class Listen extends Thread implements Kernel {
 				Thread.sleep(sleep);
 			} catch (Exception e) {
 				try {
-					if(index++ == 100) break;
+					if(index++ == 20) close();
 					this.restart();
+					index = 0;
 				} catch (Exception e1) {
 					e1.printStackTrace();
 				}

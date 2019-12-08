@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.net.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="625.0" prefWidth="1100.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="server.gui.run.control.ControlActivityMain">
+   <left>
+      <AnchorPane prefHeight="600.0" prefWidth="222.0" style="-fx-background-color: #362159;" BorderPane.alignment="CENTER">
+         <children>
+            <Label layoutX="3.0" layoutY="10.0" prefHeight="27.0" prefWidth="145.0" text="File Share" textFill="WHITE" AnchorPane.leftAnchor="15.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
+               <font>
+                  <Font name="Cambria Bold Italic" size="25.0" />
+               </font>
+            </Label>
+            <Button alignment="BOTTOM_LEFT" graphicTextGap="15.0" layoutX="4.0" layoutY="506.0" mnemonicParsing="false" onAction="#EV_Control" prefHeight="0.0" prefWidth="222.0" style="-fx-background-radius: 10px;" styleClass="home" text="Settings" textFill="WHITE" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+               <font>
+                  <Font name="Cambria Bold" size="14.0" />
+               </font>
+               <graphic>
+                  <ImageView fx:id="imgST" fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../icon/setting.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+               <stylesheets>
+                  <URL value="@style/main.css" />
+                  <URL value="@../style/main.css" />
+               </stylesheets>
+            </Button>
+            <VBox layoutY="138.0" prefHeight="190.0" prefWidth="204.0" spacing="10.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="155.0">
+               <children>
+                  <Button alignment="BOTTOM_LEFT" graphicTextGap="10.0" layoutX="23.0" layoutY="138.0" mnemonicParsing="false" onAction="#EV_Control" prefHeight="35.0" prefWidth="220.0" styleClass="home" text="Home" textFill="WHITE" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="138.0">
+                     <font>
+                        <Font name="Cambria Bold" size="14.0" />
+                     </font>
+                     <graphic>
+                        <ImageView fx:id="imgH" fitHeight="40.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../icon/me.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                     <stylesheets>
+                        <URL value="@style/main.css" />
+                        <URL value="@../style/main.css" />
+                     </stylesheets>
+                  </Button>
+                  <Button alignment="BOTTOM_LEFT" graphicTextGap="10.0" mnemonicParsing="false" onAction="#EV_Control" prefHeight="35.0" prefWidth="220.0" styleClass="home" text="Computer" textFill="WHITE">
+                     <font>
+                        <Font name="Cambria Bold" size="14.0" />
+                     </font>
+                     <graphic>
+                        <ImageView fx:id="imgC" fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../icon/computer.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                     <stylesheets>
+                        <URL value="@style/main.css" />
+                        <URL value="@../style/main.css" />
+                     </stylesheets>
+                  </Button>
+                  <Button alignment="BOTTOM_LEFT" graphicTextGap="10.0" mnemonicParsing="false" onAction="#EV_Control" prefHeight="35.0" prefWidth="220.0" styleClass="home" text="Share with me" textFill="WHITE">
+                     <font>
+                        <Font name="Cambria Bold" size="14.0" />
+                     </font>
+                     <graphic>
+                        <ImageView fx:id="imgS" fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../icon/share.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                     <stylesheets>
+                        <URL value="@style/main.css" />
+                        <URL value="@../style/main.css" />
+                     </stylesheets>
+                  </Button>
+                  <Button alignment="BOTTOM_LEFT" graphicTextGap="10.0" mnemonicParsing="false" onAction="#EV_Control" prefHeight="35.0" prefWidth="220.0" styleClass="home" text="Trash" textFill="WHITE">
+                     <font>
+                        <Font name="Cambria Bold" size="14.0" />
+                     </font>
+                     <graphic>
+                        <ImageView fx:id="imgT" fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../icon/trash.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                     <stylesheets>
+                        <URL value="@style/main.css" />
+                        <URL value="@../style/main.css" />
+                     </stylesheets>
+                  </Button>
+               </children>
+            </VBox>
+            <Separator layoutX="10.0" layoutY="46.0" prefWidth="200.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="12.0" AnchorPane.topAnchor="55.0" />
+            <ImageView fx:id="imgV" fitHeight="70.0" fitWidth="70.0" layoutX="74.0" layoutY="65.0" pickOnBounds="true" preserveRatio="true" AnchorPane.leftAnchor="74.0" AnchorPane.rightAnchor="78.0" AnchorPane.topAnchor="65.0">
+               <image>
+                  <Image url="@../icon/cloud.png" />
+               </image>
+            </ImageView>
+            <ImageView fx:id="imgO" fitHeight="30.0" fitWidth="30.0" layoutX="192.0" layoutY="13.0" pickOnBounds="true" preserveRatio="true" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="13.0">
+               <image>
+                  <Image url="@../icon/red.png" />
+               </image>
+            </ImageView>
+         </children>
+      </AnchorPane>
+   </left>
+   <center>
+      <StackPane fx:id="stackPane" style="-fx-background-color: #fff;" BorderPane.alignment="CENTER" />
+   </center>
+</BorderPane>

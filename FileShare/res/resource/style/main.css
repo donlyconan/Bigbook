@@ -1,0 +1,9 @@
+.home {
+	-fx-background-color: #402b64;
+	-fx-position: left;
+}
+
+.home:hover {
+	-fx-background-color : #a162e5;
+	-fx-scale-y: 1.2;
+}

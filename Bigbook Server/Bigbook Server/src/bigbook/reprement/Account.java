@@ -1,8 +1,11 @@
 package bigbook.reprement;
 
+import java.io.Serializable;
+
 import bigbook.Platform.Platform;
 
-public class Account implements Platform {
+public class Account implements Platform, Serializable{
+	private static final long serialVersionUID = 1L;
 	private String username;
 	private String password;
 
@@ -12,11 +15,11 @@ public class Account implements Platform {
 	}
 
 	public static Noti Checked(String username, String password) {
-		return Noti.ACCxNOTEXIT;
+		return Noti.NTxLoginSuccess;
 	}
 	
 	public Noti Checked() {
-		return Noti.ACCxNOTEXIT;
+		return Noti.NTxLoginSuccess;
 	}
 
 	public String getUsername() {

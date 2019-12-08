@@ -4,7 +4,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
 import bigbook.Platform.Platform;
-import bigbook.transfer.data.Message;
+import bigbook.transfer.data.Bytes;
 
 public class Request implements Platform {
 	private ObjectOutputStream oos;
@@ -16,14 +16,25 @@ public class Request implements Platform {
 		this.ois = ois;
 	}
 
-	public Command handle(Command key, Message data) {
+	public Command handle(Command key, Bytes data) {
 		switch (data.get()) {
 		case RQxConnectVoiceChat:
-
 			break;
-
+		case RQxFaceTime:
+			break;
+		case RQxLogin:
+			break;
+		case RQxLogout:
+			break;
+		case RQxSendFile:
+			break;
+		case RQxSendImage:
+			break;
+		case RQxSendMessage:
+			break;
 		default:
 			break;
+		
 		}
 		return null;
 	}

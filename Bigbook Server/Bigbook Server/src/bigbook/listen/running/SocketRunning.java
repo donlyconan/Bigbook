@@ -5,7 +5,7 @@ import java.io.ObjectOutputStream;
 import java.net.Socket;
 
 import bigbook.Platform.Work;
-import bigbook.transfer.data.Message;
+import bigbook.transfer.data.Bytes;
 
 public class SocketRunning extends Thread implements Work {
 	private String id;
@@ -30,11 +30,11 @@ public class SocketRunning extends Thread implements Work {
 
 	@Override
 	public void run() {
-		Message data = null;
+		Bytes data = null;
 		Command cmd = null;
 		while (!socket.isClosed()) {
 			try {
-				data = (Message) Work.rev(ois);
+				data = (Bytes) Work.rev(ois);
 				cmd = res.handle(data);
 				req.handle(cmd, data);
 			} catch (Exception e) {
@@ -43,8 +43,9 @@ public class SocketRunning extends Thread implements Work {
 		}
 	}
 
-	public void throwError(Error e) {
-
+	public void throwError(Error e) 
+	{
+		
 	}
 
 	public void start() {

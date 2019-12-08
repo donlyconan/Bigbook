@@ -1,101 +1,57 @@
 package bigbook.transfer.data;
 
-import java.io.IOException;
-import java.util.Arrays;
+import java.io.Serializable;
 
-import bigbook.Platform.Transfer;
+import bigbook.Platform.Platform;
 
-public class Message implements Transfer {
+public class Message implements Platform, Serializable {
 	private static final long serialVersionUID = 1L;
+	private String sender;
+	private String reciver;
+	private String content;
+	private String time;
 
-	private String code;
-	private String send;
-	private String rev;
-	private byte[] data;
-	private long time;
-
-	public Message(Object code) {
+	public Message(String sender, String reciver, String content) {
 		super();
-		this.code = code.toString();
+		this.sender = sender;
+		this.reciver = reciver;
+		this.content = content;
 	}
-
-	public Message(Object code, String send, String rev, byte[] data) {
-		super();
-		this.code = code.toString();
-		this.send = send;
-		this.rev = rev;
-		this.data = data;
-	}
-
-	public Message(Object code, byte[] data) {
-		super();
-		this.code = code.toString();
-		this.data = data;
-	}
-
-	public Message(Object code, String send, String rev, byte[] data, long time) {
-		super();
-		this.code = code.toString();
-		this.send = send;
-		this.rev = rev;
-		this.data = data;
-		this.time = time;
-	}
-
-	@Override
-	public Command get() {
-		return Command.valueOf(code);
-	}
-
-	public byte[] getData() {
-		return data;
-	}
-
-	@Override
-	public byte[] toBytes() throws IOException {
-		return Transfer.toBytes(this);
-	}
-
+	
 	@Override
 	public String toString() {
-		return "Message [code=" + code + ", send=" + send + ", rev=" + rev + ", data=" + Arrays.toString(data)
-				+ ", time=" + time + "]";
+		return "Message [sender=" + sender + ", reciver=" + reciver + ", content=" + content + ", time=" + time + "]";
 	}
 
-	public String getCode() {
-		return code;
+	public String getSender() {
+		return sender;
 	}
 
-	public void setCode(String code) {
-		this.code = code;
+	public void setSender(String sender) {
+		this.sender = sender;
 	}
 
-	public String getSend() {
-		return send;
+	public String getReciver() {
+		return reciver;
 	}
 
-	public void setSend(String send) {
-		this.send = send;
+	public void setReciver(String reciver) {
+		this.reciver = reciver;
 	}
 
-	public String getRev() {
-		return rev;
+	public String getContent() {
+		return content;
 	}
 
-	public void setRev(String rev) {
-		this.rev = rev;
+	public void setContent(String content) {
+		this.content = content;
 	}
 
-	public long getTime() {
-		return time;
+	public Long getTime() {
+		return Long.valueOf(time);
 	}
 
 	public void setTime(long time) {
-		this.time = time;
+		this.time = String.valueOf(time);
 	}
-
-	public void setData(byte[] data) {
-		this.data = data;
-	}
-
 }

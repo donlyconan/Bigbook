@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.*?>
+<?import java.lang.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<BorderPane prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="server.gui.run.control.ControlMyFiles">
+   <bottom>
+      <AnchorPane prefHeight="0.0" prefWidth="900.0" BorderPane.alignment="CENTER">
+         <children>
+            <Text fx:id="textUpload" fill="#3f064f" layoutX="15.0" layoutY="17.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Uploading..." AnchorPane.bottomAnchor="2.0" AnchorPane.rightAnchor="180.0" AnchorPane.topAnchor="3.0">
+               <font>
+                  <Font name="Cambria" size="15.0" />
+               </font>
+            </Text>
+            <Text fx:id="textDownload" fill="#3f064f" layoutX="144.0" layoutY="24.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Downloading..." AnchorPane.bottomAnchor="2.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="3.0">
+               <font>
+                  <Font name="Cambria" size="15.0" />
+               </font>
+            </Text>
+            <Text fx:id="textPath" fill="#03555b" layoutX="5.0" layoutY="16.3525390625" strokeType="OUTSIDE" strokeWidth="0.0" text="C:\User\Donly\Application\Eclipse\Java.exe" AnchorPane.bottomAnchor="3.75927734375" AnchorPane.leftAnchor="5.0" AnchorPane.topAnchor="4.0">
+               <font>
+                  <Font name="Cambria" size="13.0" />
+               </font>
+            </Text>
+            <ImageView fx:id="imgUL" fitHeight="15.0" fitWidth="15.0" layoutX="623.0" layoutY="5.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="3.0" AnchorPane.rightAnchor="262.0">
+               <image>
+                  <Image url="@../../../../../../Desktop/Image/upload.png" />
+               </image>
+            </ImageView>
+            <ImageView fx:id="imgDL" fitHeight="15.0" fitWidth="15.0" layoutX="773.0" layoutY="5.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="3.0" AnchorPane.rightAnchor="112.0">
+               <image>
+                  <Image url="@../../../../../../Desktop/Image/download.png" />
+               </image>
+            </ImageView>
+         </children>
+      </AnchorPane>
+   </bottom>
+   <center>
+      <SplitPane dividerPositions="0.07850467289719626" orientation="VERTICAL">
+         <items>
+            <HBox fx:id="box" alignment="CENTER_LEFT" prefHeight="33.0" prefWidth="898.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" SplitPane.resizableWithParent="false">
+               <children>
+                  <Button fx:id="fileRoot" maxWidth="150.0" mnemonicParsing="false" style="-fx-background-radius: 6px;" text="Root Name">
+                     <font>
+                        <Font name="Cambria Bold" size="14.0" />
+                     </font>
+                     <graphic>
+                        <ImageView fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../icon/home%20folder.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                     <HBox.margin>
+                        <Insets />
+                     </HBox.margin>
+                  </Button>
+                  <Label text="&gt;">
+                     <font>
+                        <Font name="System Bold" size="16.0" />
+                     </font>
+                  </Label>
+               </children>
+               <padding>
+                  <Insets bottom="2.0" left="5.0" top="2.0" />
+               </padding>
+            </HBox>
+            <ScrollPane fx:id="scrollPane" hbarPolicy="NEVER">
+               <content>
+                  <FlowPane fx:id="tableview" columnHalignment="CENTER" hgap="10.0" prefHeight="495.0" prefWidth="882.0" vgap="10.0">
+                     <padding>
+                        <Insets bottom="5.0" left="5.0" right="10.0" top="5.0" />
+                     </padding>
+                  </FlowPane>
+               </content>
+            </ScrollPane>
+         </items>
+         <contextMenu>
+            <ContextMenu fx:id="content" height="200.0" style="-fx-text-fill: 14px;" width="300.0">
+              <items>
+                  <MenuItem mnemonicParsing="false" onAction="#MenuContext" text="Rename...">
+                     <graphic>
+                        <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../../../../../Desktop/Image/rename.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </MenuItem>
+                  <MenuItem mnemonicParsing="false" onAction="#MenuContext" text="Refresh">
+                     <graphic>
+                        <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../../../../../Desktop/Image/refresh.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </MenuItem>
+                  <MenuItem mnemonicParsing="false" onAction="#MenuContext" text="Search">
+                     <graphic>
+                        <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../../../../../Desktop/Image/rename.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </MenuItem>
+                  <MenuItem mnemonicParsing="false" onAction="#MenuContext" text="New folder">
+                     <graphic>
+                        <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../../../../../Desktop/Image/share.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </MenuItem>
+                  <MenuItem mnemonicParsing="false" onAction="#MenuContext" text="Share">
+                     <graphic>
+                        <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../../../../../Desktop/Image/share.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </MenuItem>
+                  <MenuItem mnemonicParsing="false" onAction="#MenuContext" text="Upload file">
+                     <graphic>
+                        <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../../../../../Desktop/Image/upload.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </MenuItem>
+                  <MenuItem mnemonicParsing="false" onAction="#MenuContext" text="Upload folder">
+                     <graphic>
+                        <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../../../../../Desktop/Image/upload.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </MenuItem>
+                  <MenuItem mnemonicParsing="false" onAction="#MenuContext" text="Download">
+                     <graphic>
+                        <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../../../../../Desktop/Image/download.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </MenuItem>
+                  <MenuItem mnemonicParsing="false" onAction="#MenuContext" text="Delete">
+                     <graphic>
+                        <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../../../../../../Desktop/Image/delete.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </MenuItem>
+              </items>
+            </ContextMenu>
+         </contextMenu>
+      </SplitPane>
+   </center>
+   <top>
+      <AnchorPane prefHeight="10.0" prefWidth="845.0" style="-fx-background-color: #5757cc;" BorderPane.alignment="CENTER">
+         <children>
+            <TextField fx:id="txtSearch" layoutX="501.0" prefHeight="29.0" prefWidth="313.0" promptText="Search content?" style="-fx-text-fill: #fff; -fx-border-color: #fff; -fx-background-color: transaprent; -fx-border-radius: 8px;" AnchorPane.bottomAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="5.0">
+               <font>
+                  <Font name="Cambria" size="13.0" />
+               </font>
+            </TextField>
+            <Button fx:id="search" contentDisplay="GRAPHIC_ONLY" layoutX="787.0" layoutY="5.0" mnemonicParsing="false" onAction="#EVSearch" prefHeight="35.0" prefWidth="43.0" style="-fx-background-color: transparent;" text="Search" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+               <font>
+                  <Font name="Cambria" size="13.0" />
+               </font>
+               <graphic>
+                  <ImageView fx:id="imgSearch" fitHeight="30.0" fitWidth="30.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../icon/send%20file.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+            </Button>
+         </children>
+      </AnchorPane>
+   </top>
+</BorderPane>

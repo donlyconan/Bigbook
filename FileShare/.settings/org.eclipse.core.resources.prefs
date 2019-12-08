@@ -1,6 +1,4 @@
 eclipse.preferences.version=1
-encoding//src/server/data/ArrayByte.java=UTF-8
-encoding//src/server/data/SystemRunning.java=UTF-8
-encoding//src/server/gui/Controller.java=UTF-8
-encoding//src/server/gui/RunMain.java=UTF-8
+encoding//gui/server/gui/run/Run.java=UTF-8
+encoding//gui/server/gui/run/control/ControlActivityMain.java=UTF-8
 encoding/<project>=UTF-8

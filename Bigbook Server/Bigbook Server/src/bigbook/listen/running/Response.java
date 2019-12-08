@@ -4,7 +4,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
 import bigbook.Platform.Platform;
-import bigbook.transfer.data.Message;
+import bigbook.transfer.data.Bytes;
 
 public class Response implements Platform {
 	private ObjectOutputStream oos;
@@ -16,18 +16,29 @@ public class Response implements Platform {
 		this.ois = ois;
 	}
 
-	public Command handle(Message data) {
+	public Command handle(Bytes data) {
 		switch (data.get()) {
 		case RPxFinishFile:
-
 			break;
-
+		case RPxLogin:
+			break;
+		case RPxLogout:
+			break;
+		case RPxSendImage:
+			break;
+		case RPxSendMessage:
+			break;
+		case RPxSendingFile:
+			break;
+		case RPxStatusFaceTime:
+			break;
+		case RPxStatusVoiceChat:
 		default:
 			break;
+
 		}
 		return null;
 	}
-
 
 	public ObjectOutputStream getOos() {
 		return oos;
@@ -44,7 +55,5 @@ public class Response implements Platform {
 	public void setOis(ObjectInputStream ois) {
 		this.ois = ois;
 	}
-	
-	
 
 }
