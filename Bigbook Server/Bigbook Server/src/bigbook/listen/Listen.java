@@ -2,45 +2,105 @@ package bigbook.listen;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
+import java.nio.ByteBuffer;
+import java.nio.channels.SelectionKey;
+import java.nio.channels.Selector;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Queue;
+import java.util.Set;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import bigbook.Platform.Kernel;
-import bigbook.listen.running.SocketRunning;
+import bigbook.Platform.Transfer;
+import bigbook.listen.running.Request;
+import bigbook.transfer.data.DataTransfer;
+import load.resource.Print;
+import load.resource.Print.Content;
 
-public class Listen extends Thread implements Kernel {
+public class Listen implements Kernel, Runnable {
+	public static enum Mode {
+		ACCEPT, READ, WRITE, CONNECT, VALID
+	};
 	public static final int PORT = 8888;
 	public static final String SERVER_IP = "localhost";
-
 	// Phân chia nhánh
 	private int safe;
-	private ServerSocketChannel server;
+	private ServerSocketChannel socketServer;
 	private Queue<SocketChannel> queue;
+	private Selector seletor;
+	private ExecutorService execute;
 
 	public Listen() throws IOException {
 		Init();
 	}
 
 	private void Init() throws IOException {
-		server = ServerSocketChannel.open();
-		InetSocketAddress inet = new InetSocketAddress("localhost", PORT);
-		server.socket().bind(inet);
+		seletor = Selector.open();
+		socketServer = ServerSocketChannel.open();
+		InetSocketAddress inet = new InetSocketAddress(SERVER_IP, PORT);
+		socketServer.socket().bind(inet);
+		socketServer.configureBlocking(false);
+		socketServer.register(seletor, socketServer.validOps());
 		queue = new LinkedList<SocketChannel>();
 		safe = 50000;
+		execute = Executors.newFixedThreadPool(1000);
 	}
 
 	@Override
 	public void start() {
-		super.start();
-		SocketChannel con;
-		while (server.isOpen()) {
+		Print.out(Content.INFO, "Start Server!");
+		ByteBuffer buff = ByteBuffer.allocate(2 * Transfer.KILOBYTE);
+
+		while (true) {
 			try {
-				con = server.accept();
-				System.out.println("Accept connect!");
-				queue.add(con);
+				seletor.select();
+				Set<SelectionKey> keys = seletor.selectedKeys();
+				Iterator<SelectionKey> iter = keys.iterator();
+
+				while (iter.hasNext()) {
+					SelectionKey key = iter.next();
+					iter.remove();
+					Mode mode = getMode(key);
+					
+					switch (mode) {
+					case ACCEPT:
+						SocketChannel client = socketServer.accept();
+						client.configureBlocking(false);
+						client.register(seletor,SelectionKey.OP_READ);
+						Print.out(Content.ACCEPT, client.getLocalAddress() + "  timeout:" + client.socket().getSoTimeout());
+						break;
+					case READ:
+						SocketChannel socket = (SocketChannel) key.channel();
+						socket.read(buff);
+						Request request = new Request(DataTransfer.valuesOf(buff.array()), socket);
+						execute.execute(request);
+						buff.clear();
+						break;
+					case WRITE:
+
+						break;
+					case VALID:
+					case CONNECT:
+						Print.out(Content.QUIT, key.channel().toString());
+						close(key);
+						break;
+
+					default:
+						break;
+					}
+				}
+
 			} catch (IOException e) {
+				Logger.getAnonymousLogger().log(Level.FINE, e.getMessage());
+				e.printStackTrace();
+			} catch (ClassNotFoundException e) {
+				Logger.getAnonymousLogger().log(Level.WARNING, e.getMessage());
 				e.printStackTrace();
 			}
 		}
@@ -48,57 +108,45 @@ public class Listen extends Thread implements Kernel {
 
 	@Override
 	public void run() {
-		int sleep = 20, index = 0;
-
-		while (server.isOpen()) {
-
-			try {
-				if (queue.size() > 0 && USERS.size() <= safe) {
-					SocketChannel socket = queue.peek();
-					if (socket.isOpen()) {
-						SocketRunning run = new SocketRunning(null);
-						run.start();
-					}
-					sleep /= 2;
-				} else if (sleep < 1500) {
-					sleep += 20;
-				}
-				Thread.sleep(sleep);
-			} catch (Exception e) {
-				try {
-					if(index++ == 20) close();
-					this.restart();
-					index = 0;
-				} catch (Exception e1) {
-					e1.printStackTrace();
-				}
-				e.printStackTrace();
-			}
-		}
+		start();
+	}
+	
+	public Mode getMode(SelectionKey key) {
+		if (key.isAcceptable())
+			return Mode.ACCEPT;
+		if (key.isReadable())
+			return Mode.READ;
+		if (key.isWritable())
+			return Mode.WRITE;
+		if (key.isConnectable())
+			return Mode.CONNECT;
+		if (key.isValid())
+			return Mode.VALID;
+		return null;
 	}
 
-	@SuppressWarnings("deprecation")
+	@SuppressWarnings("unlikely-arg-type")
+	public void close(SelectionKey key) throws IOException
+	{
+		key.cancel();
+		USERS_LOGIN.remove(key.channel());
+		Print.out(Content.FINISH, key.channel());
+		key.channel().close();
+	}
+
 	@Override
 	public void restart() throws Exception {
-		// Lam sach
-		super.stop();
+		Print.out(Content.RESTART, "Restart server!");
 		this.Init();
 		this.start();
 	}
 
-	@SuppressWarnings("deprecation")
 	@Override
-	public void xstop() throws Exception {
-		super.stop();
-		for(SocketRunning item : USERS.values()) 
-			item.xstop();
-	}
+	public void xstop() throws Exception {}
 
 	@Override
 	public void close() throws Exception {
-		for (Kernel item : USERS.values())
-			item.close();
-		server.close();
+		socketServer.close();
 	}
 
 	public int getSafe() {
@@ -110,11 +158,11 @@ public class Listen extends Thread implements Kernel {
 	}
 
 	public ServerSocketChannel getServer() {
-		return server;
+		return socketServer;
 	}
 
 	public void setServer(ServerSocketChannel server) {
-		this.server = server;
+		this.socketServer = server;
 	}
 
 	public Queue<SocketChannel> getQueue() {
@@ -124,7 +172,5 @@ public class Listen extends Thread implements Kernel {
 	public void setQueue(Queue<SocketChannel> queue) {
 		this.queue = queue;
 	}
-	
-	
 
 }

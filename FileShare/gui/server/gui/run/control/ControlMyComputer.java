@@ -8,6 +8,8 @@ import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
 
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -45,15 +47,9 @@ public class ControlMyComputer implements Platform, Initializable {
 	@FXML
 	Button fileRoot;
 	@FXML
-	Text textPath;
-	@FXML
 	ContextMenu content;
 	@FXML
 	ScrollPane scrollPane;
-	@FXML
-	ImageView imgUL;
-	@FXML
-	ImageView imgDL;
 	@FXML
 	ImageView imgSearch;
 
@@ -63,19 +59,18 @@ public class ControlMyComputer implements Platform, Initializable {
 //	static FTPClient ftp;
 	static MFSearch mfsea;
 	static APIComputerFolder folder;
-	private String fol;
+	static String fol;
+	static Thread thread;
+	static Text textPath = (Text) Data.get(Type.ITextPath);
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
-		Data.put(Type.IMCTextPath, textPath);
 		mfsea = new MFSearch();
 		System.out.println(textPath);
 		scrollPane.viewportBoundsProperty().addListener((u, v, e) -> {
 			tableview.setPrefSize(e.getWidth(), e.getHeight());
 		});
 		folder = new APIComputerFolder(box.getChildren(), tableview.getChildren());
-		imgUL.setImage(Loader.loadImage("upload.png"));
-		imgDL.setImage(Loader.loadImage("download.png"));
 		imgSearch.setImage(Loader.loadImage("search.png"));
 		fileRoot.setGraphic(APILoader.getIconFile("home folder", 25, 25));
 		List<ImageView> img = APILoader
@@ -90,8 +85,19 @@ public class ControlMyComputer implements Platform, Initializable {
 		});
 		fileRoot.setOnMouseClicked(folder);
 		folder.make();
+		folder.setCurParent(folder.getRoot().get(0).getCurrentFile());
+
+		scrollPane.vvalueProperty().addListener(scroll);
 
 	}
+
+	private ChangeListener<Number> scroll = new ChangeListener<Number>() {
+
+		@Override
+		public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
+			//To do
+		}
+	};
 
 	public void EVSearch(ActionEvent e) {
 		mfsea.stop();
@@ -101,23 +107,27 @@ public class ControlMyComputer implements Platform, Initializable {
 			try {
 				mfsea.search(folder.getCurParent().getAbsolutePath(), txtSearch.getText());
 
-				Platform.start(() -> {
+				thread = Platform.start(() -> {
 					System.out.println(mfsea.isRunning());
 					while (mfsea.isRunning()) {
-						if (!mfsea.getResult().isEmpty())
-						{
+						if (!mfsea.getResult().isEmpty()) {
 							folder.addFileIteam(mfsea.toListItem());
-							textPath.setText("Resut find: " + folder.getData().size() + "  finish!...");
+							textPath.setText("Resut find: " + mfsea.getIndex() + "  finish!...");
 						}
-						
+
 						try {
-							Thread.sleep(300);
+							if (mfsea.getIndex() > 100) {
+								synchronized (mfsea) {
+									mfsea.getThread().wait();
+								}
+							}
+							Thread.sleep(10);
 						} catch (InterruptedException e1) {
 							e1.printStackTrace();
 						}
 					}
 					folder.addFileIteam(mfsea.toListItem());
-					textPath.setText("Resut find: " + folder.getData().size() + "  finish!...");
+					textPath.setText("Resut find: " + mfsea.getIndex() + "  finish!...");
 				});
 			} catch (Exception e2) {
 				e2.printStackTrace();

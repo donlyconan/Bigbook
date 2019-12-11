@@ -4,11 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
 import javafx.scene.text.Text;
 import resource.Loader;
 
 public class APILoader {
+	public static String CSS = "-fx-font-family: 'cambria'; -fx-font-size: 13; -fx-background-radius: 6px;";
 
 	public static Button createButton(String text) {
 		Button but = new Button(text, getIconFile("folder", 20, 20));
@@ -17,6 +19,13 @@ public class APILoader {
 		but.setMaxWidth(100);
 		but.setMinWidth(60);
 		return but;
+	}
+	
+	public static Label createLableEmpty()
+	{
+		Label lab = new Label("Folder is empty!");
+		lab.setStyle(CSS);
+		return lab;
 	}
 	
 	public static Text createText() {

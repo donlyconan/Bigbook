@@ -117,6 +117,41 @@
       </AnchorPane>
    </left>
    <center>
-      <StackPane fx:id="stackPane" style="-fx-background-color: #fff;" BorderPane.alignment="CENTER" />
+      <BorderPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+         <bottom>
+            <AnchorPane prefHeight="0.0" prefWidth="900.0" BorderPane.alignment="CENTER">
+               <children>
+                  <Text fx:id="textUpload" fill="#3f064f" layoutX="15.0" layoutY="17.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Uploading..." AnchorPane.bottomAnchor="2.0" AnchorPane.rightAnchor="180.0" AnchorPane.topAnchor="3.0">
+                     <font>
+                        <Font name="Cambria" size="15.0" />
+                     </font>
+                  </Text>
+                  <Text fx:id="textDownload" fill="#3f064f" layoutX="144.0" layoutY="24.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Downloading..." AnchorPane.bottomAnchor="2.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="3.0">
+                     <font>
+                        <Font name="Cambria" size="15.0" />
+                     </font>
+                  </Text>
+                  <Text fx:id="textPath" fill="#03555b" layoutX="5.0" layoutY="16.3525390625" strokeType="OUTSIDE" strokeWidth="0.0" text="No notification!" AnchorPane.bottomAnchor="3.75927734375" AnchorPane.leftAnchor="5.0" AnchorPane.topAnchor="4.0">
+                     <font>
+                        <Font name="Cambria" size="13.0" />
+                     </font>
+                  </Text>
+                  <ImageView fx:id="imgUL" fitHeight="15.0" fitWidth="15.0" layoutX="623.0" layoutY="5.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="3.0" AnchorPane.rightAnchor="262.0">
+                     <image>
+                        <Image url="@../../../../../../Desktop/Image/upload.png" />
+                     </image>
+                  </ImageView>
+                  <ImageView fx:id="imgDL" fitHeight="15.0" fitWidth="15.0" layoutX="773.0" layoutY="5.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="3.0" AnchorPane.rightAnchor="112.0">
+                     <image>
+                        <Image url="@../../../../../../Desktop/Image/download.png" />
+                     </image>
+                  </ImageView>
+               </children>
+            </AnchorPane>
+         </bottom>
+         <center>
+            <StackPane fx:id="stackPane" style="-fx-background-color: #fff;" BorderPane.alignment="CENTER" />
+         </center>
+      </BorderPane>
    </center>
 </BorderPane>

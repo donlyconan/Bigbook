@@ -2,96 +2,98 @@ package server.gui.item;
 
 import java.io.Serializable;
 
-import org.apache.commons.net.ftp.FTPFile;
-
-import javafx.scene.control.Button;
-import javafx.scene.control.ContentDisplay;
+import javafx.geometry.Pos;
+import javafx.scene.control.Label;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.VBox;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.text.TextAlignment;
+import server.api.APIFTPFile;
 import server.api.APILoader;
 import server.platform.Platform;
 
-public class FTPFileItem extends Button implements Serializable, Platform {
+public class FTPFileItem extends VBox implements Serializable, Platform {
 	public static final String STYLE_CSS = "-fx-font-family: 'cambria'; -fx-font-size: 13; -fx-background-radius: 6px;";
-	public static final Rectangle REC_IMG = new Rectangle(65, 65);
-	public static final Rectangle REC_ITEM = new Rectangle(70,90);
+	public static final Rectangle REC_IMG = new Rectangle(70,70);
+	public static final Rectangle REC_ITEM = new Rectangle(70,105);
 	private static final long serialVersionUID = 1L;
-	private FTPFile file;
+	private APIFTPFile file;
+	private Label text;
 
-	public FTPFileItem(FTPFile file) {
+	public FTPFileItem(APIFTPFile file) {
 		super();
 		this.file = file;
-		setStyle(STYLE_CSS);
-		setText(cut(file.getName()));
-		setPrefSize(REC_ITEM.getWidth(), REC_ITEM.getHeight());
-		setContentDisplay(ContentDisplay.TOP);
+		text = new Label(cut(file.getName()));
+		text.setStyle(STYLE_CSS);
 
 		if (file.isFile())
-			init();
+			getChildren().add(init());
 		else
-			setGraphic(APILoader.getIconFolder());
+			getChildren().add(APILoader.getIconFile("folder", REC_IMG.getWidth(), REC_IMG.getHeight()));
+		getChildren().add(text);
+		text.setPrefSize(REC_IMG.getWidth(), 35);
+		text.setWrapText(true);
+		text.setAlignment(Pos.CENTER);
+		text.setTextAlignment(TextAlignment.CENTER);
+		setAlignment(Pos.TOP_CENTER);
 	}
 
-	private void init() {
+	private ImageView init() {
 		FileType key = FileType.FILE;
 		try {
-			 key = FileType.valueOf(getExtention().toUpperCase());
-		} catch (Exception e) {}
-	
+			key = FileType.valueOf(getExtention().toUpperCase());
+		} catch (Exception e) {
+		}
+
 		switch (key) {
 		case JAR:
-			setGraphic(APILoader.getIconFile(".jar",REC_IMG.getWidth(), REC_IMG.getHeight()));
-			break;
+			return APILoader.getIconFile(".jar", REC_IMG.getWidth(), REC_IMG.getHeight());
 		case CLASS:
-			setGraphic(APILoader.getIconFile(".class",REC_IMG.getWidth(), REC_IMG.getHeight()));
-			break;
+			return APILoader.getIconFile(".class", REC_IMG.getWidth(), REC_IMG.getHeight());
 		case CPP:
-			setGraphic(APILoader.getIconFile(".cpp",REC_IMG.getWidth(), REC_IMG.getHeight()));
-			break;
+			return APILoader.getIconFile(".cpp", REC_IMG.getWidth(), REC_IMG.getHeight());
 		case H:
-			setGraphic(APILoader.getIconFile(".h",REC_IMG.getWidth(), REC_IMG.getHeight()));
-			break;
+			return APILoader.getIconFile(".h", REC_IMG.getWidth(), REC_IMG.getHeight());
 		case ZIP:
 		case RAR:
-			setGraphic(APILoader.getIconFile(".zip",REC_IMG.getWidth(), REC_IMG.getHeight()));
-			break;
+			return APILoader.getIconFile(".zip", REC_IMG.getWidth(), REC_IMG.getHeight());
 		case JPG:
 		case PNG:
 		case JPGE:
-			setGraphic(APILoader.getIconFile(".img",REC_IMG.getWidth(), REC_IMG.getHeight()));
-			break;
+			return APILoader.getIconFile(".img", REC_IMG.getWidth(), REC_IMG.getHeight());
 		case ICO:
-			setGraphic(APILoader.getIconFile(".img",REC_IMG.getWidth(), REC_IMG.getHeight()));
-			break;
+			return APILoader.getIconFile(".img", REC_IMG.getWidth(), REC_IMG.getHeight());
 		case TXT:
-			setGraphic(APILoader.getIconFile(".txt",REC_IMG.getWidth(), REC_IMG.getHeight()));
-			break;
+			return APILoader.getIconFile(".txt", REC_IMG.getWidth(), REC_IMG.getHeight());
 		case DLL:
-			setGraphic(APILoader.getIconFile(".dll",REC_IMG.getWidth(), REC_IMG.getHeight()));
-			break;
+			return APILoader.getIconFile(".dll", REC_IMG.getWidth(), REC_IMG.getHeight());
 		default:
-			setGraphic(APILoader.getIconFile(".file",REC_IMG.getWidth(), REC_IMG.getHeight()));
-			break;
+			return APILoader.getIconFile(".file", REC_IMG.getWidth(), REC_IMG.getHeight());
 		}
 	}
 	
-	public String getExtention()
+	public void setText(String content)
 	{
+		text.setText(content);
+	}
+
+	public String getExtention() {
 		String name = file.getName();
 		int index = name.lastIndexOf('.');
-		if(file.isFile() && index != -1)
-			return name.substring(index+1, name.length());
+		if (file.isFile() && index != -1)
+			return name.substring(index + 1, name.length());
 		return "";
 	}
 
 	public String cut(String name) {
-		return name.length() > 25 ? name.substring(0, 25) + "..." : name;
+		return name.length() > 70 ? name.substring(0, 70) + "..." : name;
 	}
 
-	public FTPFile getFile() {
+	public APIFTPFile getFTPFile() {
 		return file;
 	}
 
-	public void setFile(FTPFile file) {
+	public void setFTPFile(APIFTPFile file) {
 		this.file = file;
 	}
 

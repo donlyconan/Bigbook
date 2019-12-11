@@ -11,7 +11,7 @@ import javafx.scene.control.ProgressBar;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.text.Text;
-import server.gui.item.CBFolder;
+import server.gui.item.Folder;
 import server.gui.item.MFFileItem;
 import server.platform.Platform;
 
@@ -27,7 +27,6 @@ public class APIComputerFolder implements Platform, EventHandler<MouseEvent> {
 		super();
 		this.folder = box;
 		this.data = flow;
-		curParent = null;
 		init();
 	}
 
@@ -40,7 +39,7 @@ public class APIComputerFolder implements Platform, EventHandler<MouseEvent> {
 			root.add(fr);
 		}
 		data.addAll(root);
-		text = (Text) Data.get(Type.IMCTextPath);
+		text = (Text) Data.get(Type.ITextPath);
 	}
 
 	private EventHandler<MouseEvent> event = new EventHandler<MouseEvent>() {
@@ -90,6 +89,11 @@ public class APIComputerFolder implements Platform, EventHandler<MouseEvent> {
 					file.setOnMouseClicked(this);
 					data.add(file);
 				}
+			}
+			
+			if(data.isEmpty())
+			{
+				data.add(APILoader.createLableEmpty());
 			}
 		} else {
 			data.clear();
@@ -153,7 +157,13 @@ public class APIComputerFolder implements Platform, EventHandler<MouseEvent> {
 			}
 		}
 	}
-
+	
+	
+	/**
+	 * Xu ly su kien 
+	 * Tim current item
+	 * Gan su kien folder root
+	 */
 	@Override
 	public void handle(MouseEvent event) {
 		Node node = (Node) event.getSource();
@@ -164,17 +174,17 @@ public class APIComputerFolder implements Platform, EventHandler<MouseEvent> {
 			text.setText("Item current: \\" + MFFileItem.cutPath(item.getFile().getAbsolutePath()) + "\t"
 					+ (item.getFile().isFile() ? item.getFile().length() + " bytes" : ""));
 
-			if (!item.getFile().isFile() && event.getButton() == MouseButton.PRIMARY) {
+			if (!item.getFile().isFile() && event.getButton() == MouseButton.PRIMARY && event.getClickCount()  == 2) {
 				curParent = item.getFile();
-				Text temp = new CBFolder(item.getFile().getName(), item.getFile().getAbsolutePath());
+				Text temp = new Folder(item.getFile().getName(), item.getFile().getAbsolutePath());
 				temp.setOnMouseClicked(this);
 				folder.add(temp);
 				make();
-			}
-		} else if (node instanceof CBFolder) {
+			}  
+		} else if (node instanceof Folder) {
 			if (event.getButton() == MouseButton.PRIMARY) {
 				remove(node);
-				CBFolder fol = (CBFolder) node;
+				Folder fol = (Folder) node;
 				text.setText("Item current: \\" + fol.getFile().getAbsolutePath());
 				curParent = fol.getFile();
 				data.clear();

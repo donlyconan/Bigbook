@@ -15,8 +15,8 @@ import resource.Loader;
 public class Notification {
 	public static void show(int code, String sms) {
 		Alert noti = new Alert(AlertType.ERROR, "[Error: 0x" + code + "] " + sms, ButtonType.CLOSE);
-		((Stage) noti.getDialogPane().getScene().getWindow()).getIcons()
-				.add(Loader.loadImage("dashbroad.png"));
+//		((Stage) noti.getDialogPane().getScene().getWindow()).getIcons()
+//				.add(Loader.loadImage("dashbroad.png"));
 		noti.showAndWait();
 	}
 
@@ -37,12 +37,11 @@ public class Notification {
 		TextField text = new TextField();
 		text.setPrefWidth(300);
 		text.setText(content);
-		text.setFocusTraversable(true);
 		HBox box = new HBox(2,new Label(sms) ,text);
-		text.requestFocus();
 		box.setAlignment(Pos.CENTER_LEFT);
 		noti.getDialogPane().setContent(box);
 		Optional<ButtonType> option = noti.showAndWait();
+		text.requestFocus();
 		String fol = text.getText();
 		return (option.get() == ButtonType.YES ? fol : null);
 	}
@@ -58,10 +57,10 @@ public class Notification {
 		text.setText(nameroot);
 		text.setFocusTraversable(true);
 		HBox box = new HBox(2,new Label(sms) ,text);
-		text.requestFocus();
 		box.setAlignment(Pos.CENTER_LEFT);
 		noti.getDialogPane().setContent(box);
 		Optional<ButtonType> option = noti.showAndWait();
+		text.requestFocus();
 		String fol = text.getText();
 		return (option.get() == ButtonType.YES ? fol : null);
 	}

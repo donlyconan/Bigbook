@@ -8,18 +8,18 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 
+import org.apache.commons.net.ftp.FTP;
 import org.apache.commons.net.ftp.FTPClient;
-import org.apache.commons.net.ftp.FTPFile;
 
 import javafx.concurrent.Task;
-import javafx.scene.text.Text;
-import javafx.util.Pair;
+import server.api.APIFTPFile;
+import server.api.Print;
+import server.api.Print.Content;
 import server.platform.Platform;
 
 public class Downloads extends Task<Boolean> implements Platform {
-	private static Text text;
 	private FTPClient ftp;
-	private Queue<Pair<String, FTPFile>> queue;
+	private Queue<APIFTPFile> queue;
 	private String rootFolder;
 	private boolean result;
 
@@ -27,35 +27,40 @@ public class Downloads extends Task<Boolean> implements Platform {
 		super();
 		this.ftp = ftp;
 		this.rootFolder = root;
-		text = (Text) Data.get(Type.ITextPath);
-		queue = new LinkedList<Pair<String, FTPFile>>();
+		queue = new LinkedList<APIFTPFile>();
+		try {
+			ftp.type(FTPClient.BINARY_FILE_TYPE);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 
-	public void download(String dir, FTPFile ftpFile) {
-		queue.add(new Pair<String, FTPFile>(dir, ftpFile));
-		
-		if(!isRunning())
-		{
+	public void download(APIFTPFile ftpFile) {
+		queue.add(ftpFile);
+
+		if (!isRunning()) {
 			Platform.start(this);
 		}
 	}
 
 	@Override
 	public void run() {
+		Print.out(Content.START, "Start downloading...");
 		while (!queue.isEmpty()) {
-			Pair<String, FTPFile> curItem = queue.poll();
+			APIFTPFile curItem = queue.poll();
 			try {
-				if (curItem.getValue().isFile()) {
-					recieve(curItem.getKey(), curItem.getValue().getName());
+				if (curItem.isFile()) {
+					recieve(curItem.getDirectory(), curItem.getName());
 				} else {
-					recieveFolder(curItem.getKey(), curItem.getValue());
+					recieveFolder(curItem, curItem.getName());
 				}
 			} catch (IOException e) {
-				text.setText("Download: Error!  " + e.getMessage());
+				Print.out("Download: Error!  " + e.getMessage());
 				e.printStackTrace();
 			}
 		}
-		text.setText(result ? "Download: Finish!" : "Download: Error!");
+		Print.out(result ? "Download: Finish!" : "Download: Error!");
+		Print.out(Content.END, "End Download!");
 	}
 
 	@Override
@@ -65,34 +70,38 @@ public class Downloads extends Task<Boolean> implements Platform {
 
 	public void recieve(String dir, String name) throws IOException {
 		String local = rootFolder + "\\" + name;
-		String path = dir + name;
-		text.setText(Uploads.cutText(local));
+		String path = dir + "\\" + name;
+		Print.out("Path: " + Uploads.cutText(path));
+		ftp.setFileType(FTP.BINARY_FILE_TYPE);
 		FileOutputStream fos = new FileOutputStream(local);
 		result = ftp.retrieveFile(path, fos);
 		fos.close();
 	}
 
-	public void recieveFolder(String dir, FTPFile file) throws IOException {
-		System.out.println("Dir = " + dir + "  \\" + file.getName());
-		List<String> list = new ArrayList<String>();
-		File mkd = new File(rootFolder + "\\" + file.getName());
+	public void recieveFolder(APIFTPFile folder, String subdir) throws IOException {
+		Print.out(Content.DOWNLOD_FOLDER, folder);
+		File mkd = new File(rootFolder + "\\" +  folder.getName());
+		int index = folder.getAbsolutepath().length() - folder.getName().length();
+		if(index == -1)
+			throw new IOException("File not found!");
 		mkd.mkdir();
-
-		toList(ftp.listFiles(dir + file.getName()), list, dir + file.getName());
-		for (String item : list)
-			recieve(dir, item);
+		List<APIFTPFile> list = new ArrayList<APIFTPFile>();
+		toList(folder.listFile(ftp), list, folder.getPathname(), index);
+		for(APIFTPFile item : list)
+		{
+			String pathname = item.getAbsolutepath().substring(index, item.getAbsolutepath().length());
+			recieve(item.getDirectory().substring(0, index), pathname);
+		}
 	}
 
-	public void toList(FTPFile[] listfile, List<String> list, String root) throws IOException {
-		for (FTPFile item : listfile) {
-			String path = root + "\\" + item.getName();
-			System.out.println(rootFolder + " - " + path);
+	public void toList(List<APIFTPFile> listfile, List<APIFTPFile> list, String root, int index) throws IOException {
+		for (APIFTPFile item : listfile) {
 			if (item.isFile()) {
-				list.add(path);
+				list.add(item);
 			} else {
-				File file = new File(rootFolder + "\\" + path);
-				file.mkdirs();
-				toList(ftp.listFiles(path), list, path);
+				File mkd = new File(rootFolder + "\\" + root + "\\" + item.getName());
+				mkd.mkdir();
+				toList(item.listFile(ftp), list, root + "\\" + item.getName(), index);
 			}
 		}
 	}

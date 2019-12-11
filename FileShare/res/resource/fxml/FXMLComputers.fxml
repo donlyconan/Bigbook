@@ -9,39 +9,8 @@
 <?import javafx.scene.layout.AnchorPane?>
 
 <BorderPane prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="server.gui.run.control.ControlMyComputer">
-   <bottom>
-      <AnchorPane prefHeight="0.0" prefWidth="900.0" BorderPane.alignment="CENTER">
-         <children>
-            <Text fx:id="textUpload" fill="#3f064f" layoutX="15.0" layoutY="17.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Uploading..." AnchorPane.bottomAnchor="2.0" AnchorPane.rightAnchor="180.0" AnchorPane.topAnchor="3.0">
-               <font>
-                  <Font name="Cambria" size="15.0" />
-               </font>
-            </Text>
-            <Text fx:id="textDownload" fill="#3f064f" layoutX="144.0" layoutY="24.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Downloading..." AnchorPane.bottomAnchor="2.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="3.0">
-               <font>
-                  <Font name="Cambria" size="15.0" />
-               </font>
-            </Text>
-            <Text fx:id="textPath" fill="#03555b" layoutX="5.0" layoutY="16.3525390625" strokeType="OUTSIDE" strokeWidth="0.0" AnchorPane.bottomAnchor="3.75927734375" AnchorPane.leftAnchor="5.0" AnchorPane.topAnchor="4.0">
-               <font>
-                  <Font name="Cambria" size="13.0" />
-               </font>
-            </Text>
-            <ImageView fx:id="imgUL" fitHeight="15.0" fitWidth="15.0" layoutX="623.0" layoutY="5.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="3.0" AnchorPane.rightAnchor="262.0">
-               <image>
-                  <Image url="@../../../../../../Desktop/Image/upload.png" />
-               </image>
-            </ImageView>
-            <ImageView fx:id="imgDL" fitHeight="15.0" fitWidth="15.0" layoutX="773.0" layoutY="5.0" pickOnBounds="true" preserveRatio="true" AnchorPane.bottomAnchor="3.0" AnchorPane.rightAnchor="112.0">
-               <image>
-                  <Image url="@../../../../../../Desktop/Image/download.png" />
-               </image>
-            </ImageView>
-         </children>
-      </AnchorPane>
-   </bottom>
    <center>
-      <SplitPane dividerPositions="0.07850467289719626" orientation="VERTICAL">
+      <SplitPane dividerPositions="0.075" orientation="VERTICAL">
          <contextMenu>
             <ContextMenu fx:id="content" height="200.0" style="-fx-text-fill: 14px;" width="300.0">
                <items>
@@ -103,7 +72,7 @@
             </ContextMenu>
          </contextMenu>
          <items>
-            <HBox fx:id="box" alignment="CENTER_LEFT" prefHeight="33.0" prefWidth="898.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" SplitPane.resizableWithParent="false">
+            <HBox fx:id="box" alignment="CENTER_LEFT" prefHeight="35.0" prefWidth="898.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" SplitPane.resizableWithParent="false">
                <children>
                   <Button fx:id="fileRoot" maxWidth="150.0" mnemonicParsing="false" prefHeight="35.0" prefWidth="145.0" style="-fx-background-radius: 6px; -fx-background-color: ttransparent;" text="My Computer :">
                      <font>

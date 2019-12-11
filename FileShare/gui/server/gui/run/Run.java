@@ -6,6 +6,8 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import resource.Loader;
 import server.api.APILoader;
+import server.api.Print;
+import server.api.Print.Content;
 import server.api.Notification;
 import server.platform.Platform;
 
@@ -14,7 +16,7 @@ public class Run extends Application implements Platform {
 
 	@Override
 	public void start(Stage primaryStage) throws Exception {
-		System.out.println("[Loading...]");
+		Print.out(Content.LOADING, "Loading...");
 		
 		try {
 			Loader.Load();
@@ -24,20 +26,14 @@ public class Run extends Application implements Platform {
 			primaryStage.setTitle("File Share");
 			primaryStage.setOnCloseRequest(e -> {
 				if (Notification.showYESNO("Bạn có muốn thoát không?"))
-				{
 					System.exit(0);
-				}
-				else
-				{
-					return;
-				}
+				
 			});
-			Thread.sleep(1000);
 			primaryStage.centerOnScreen();
 			stage = primaryStage;
 			primaryStage.show();
 		} catch (Exception e) {
-			Notification.show(1111, e.getMessage());
+			Notification.show(811111, e.getMessage());
 			e.printStackTrace();
 			System.exit(0);
 		}

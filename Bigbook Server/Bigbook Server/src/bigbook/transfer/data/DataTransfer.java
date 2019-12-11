@@ -1,11 +1,11 @@
 package bigbook.transfer.data;
 
 import java.io.IOException;
-import java.util.Arrays;
+import java.nio.ByteBuffer;
 
 import bigbook.Platform.Transfer;
 
-public class Bytes implements Transfer {
+public class DataTransfer implements Transfer {
 	private static final long serialVersionUID = 1L;
 
 	private String code;
@@ -14,12 +14,12 @@ public class Bytes implements Transfer {
 	private byte[] data;
 	private long time;
 
-	public Bytes(Object code) {
+	public DataTransfer(Object code) {
 		super();
 		this.code = code.toString();
 	}
 
-	public Bytes(Object code, String send, String rev, byte[] data) {
+	public DataTransfer(Object code, String send, String rev, byte[] data) {
 		super();
 		this.code = code.toString();
 		this.send = send;
@@ -27,13 +27,13 @@ public class Bytes implements Transfer {
 		this.data = data;
 	}
 
-	public Bytes(Object code, byte[] data) {
+	public DataTransfer(Object code, byte[] data) {
 		super();
 		this.code = code.toString();
 		this.data = data;
 	}
 
-	public Bytes(Object code, String send, String rev, byte[] data, long time) {
+	public DataTransfer(Object code, String send, String rev, byte[] data, long time) {
 		super();
 		this.code = code.toString();
 		this.send = send;
@@ -41,10 +41,30 @@ public class Bytes implements Transfer {
 		this.data = data;
 		this.time = time;
 	}
+	
+	public DataTransfer createDataTransfer(Object code, byte[] data) {
+		return new DataTransfer(code.toString(), data);
+	}
+	
+	
+	public static DataTransfer valuesOf(Object value)
+	{
+		return (DataTransfer) value;
+	}
+	
+	public static DataTransfer valuesOf(byte[] data) throws ClassNotFoundException, IOException
+	{
+		return (DataTransfer) Transfer.getObject(data);
+	}
 
 	@Override
 	public Command get() {
 		return Command.valueOf(code);
+	}
+	
+	public Object toObject() throws ClassNotFoundException, IOException
+	{
+		return Transfer.getObject(data);
 	}
 
 	public byte[] getData() {
@@ -52,13 +72,13 @@ public class Bytes implements Transfer {
 	}
 
 	@Override
-	public byte[] toBytes() throws IOException {
-		return Transfer.toBytes(this);
+	public ByteBuffer toByteBuffer() throws IOException {
+		return Transfer.toByteBuffer(this);
 	}
 
 	@Override
 	public String toString() {
-		return "Message [code=" + code + ", send=" + send + ", rev=" + rev + ", data=" + Arrays.toString(data)
+		return "Message [code=" + code + ", send=" + send + ", rev=" + rev + ", data=" + data.length
 				+ ", time=" + time + "]";
 	}
 
@@ -66,8 +86,8 @@ public class Bytes implements Transfer {
 		return code;
 	}
 
-	public void setCode(String code) {
-		this.code = code;
+	public void setCode(Object code) {
+		this.code = code.toString();
 	}
 
 	public String getSend() {

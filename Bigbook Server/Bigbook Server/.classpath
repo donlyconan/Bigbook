@@ -5,6 +5,6 @@
 	<classpathentry kind="src" path="res"/>
 	<classpathentry kind="src" path="gui"/>
 	<classpathentry kind="src" path="tes"/>
-	<classpathentry kind="lib" path="E:/Downloads/Library/commons-net-3.6/commons-net-3.6.jar"/>
+	<classpathentry kind="lib" path="Data/Source/sqljdbc4-chs-4.0.2206.100.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

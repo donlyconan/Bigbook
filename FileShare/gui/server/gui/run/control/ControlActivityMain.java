@@ -10,31 +10,33 @@ import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
+import javafx.scene.text.Text;
 import resource.Loader;
+import server.api.Print;
+import server.api.Print.Content;
 import server.platform.Platform;
 
 public class ControlActivityMain implements Initializable, Platform {
 
-	@FXML
-	StackPane stackPane;
-	@FXML
-	ImageView imgH;
-	@FXML
-	ImageView imgT;
-	@FXML
-	ImageView imgS;
-	@FXML
-	ImageView imgO;
-	@FXML
-	ImageView imgST;
-	@FXML
-	ImageView imgV;
-	@FXML
-	ImageView imgC;
+	@FXML StackPane stackPane;
+	@FXML ImageView imgH;
+	@FXML ImageView imgT;
+	@FXML ImageView imgS;
+	@FXML ImageView imgO;
+	@FXML ImageView imgST;
+	@FXML ImageView imgV;
+	@FXML ImageView imgC;
+	@FXML ImageView imgUL;
+	@FXML ImageView imgDL;
+	@FXML Text textPath;
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		Data.put(Type.StackPane, stackPane);
+		Data.put(Type.ITextPath, textPath);
+		Print.setText(textPath);
+		Print.out(Content.CHECK_VALUE, textPath);
+		
 		imgH.setImage(Loader.loadImage("me.png"));
 		imgS.setImage(Loader.loadImage("share.png"));
 		imgT.setImage(Loader.loadImage("trash.png"));
@@ -42,11 +44,8 @@ public class ControlActivityMain implements Initializable, Platform {
 		imgO.setImage(Loader.loadImage("online.png"));
 		imgST.setImage(Loader.loadImage("setting.png"));
 		imgC.setImage(Loader.loadImage("computer.png"));
-
-		stackPane.getChildren().add((Node) Data.get(Type.FXComputer));
-//		stackPane.getChildren().add((Node) Data.get(Type.FXMyFiles));
-//		stackPane.getChildren().add(Platform.castNode(Type.FXMyFiles));
-//		stackPane.getChildren().add(Platform.castNode(Type.FXMyFiles));
+		imgUL.setImage(Loader.loadImage("upload.png"));
+		imgDL.setImage(Loader.loadImage("download.png"));
 	}
 
 	public void show(Type type)

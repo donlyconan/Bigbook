@@ -1,5 +1,8 @@
 package server.gui.run.control;
 
+import java.awt.Toolkit;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.StringSelection;
 import java.io.File;
 import java.io.IOException;
 import java.net.InetAddress;
@@ -27,9 +30,14 @@ import javafx.scene.layout.HBox;
 import javafx.scene.text.Text;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.FileChooser;
+import javafx.stage.Stage;
 import resource.Loader;
-import server.api.APIFolder;
+import server.api.APIFTPFile;
+import server.api.APIFTPFolder;
 import server.api.APILoader;
+import server.api.Print;
+import server.api.Print.Content;
+import server.api.Print.Status;
 import server.api.Notification;
 import server.api.search.FTPSearch;
 import server.gui.item.FTPFileItem;
@@ -37,7 +45,7 @@ import server.platform.Platform;
 import server.transfer.updown.Downloads;
 import server.transfer.updown.Uploads;
 
-public class ControlMyFiles implements Platform, Initializable {
+public class ControlCloud implements Platform, Initializable {
 	@FXML
 	ListView<Node> lisView;
 	@FXML
@@ -51,8 +59,6 @@ public class ControlMyFiles implements Platform, Initializable {
 	@FXML
 	Button fileRoot;
 	@FXML
-	Text textPath;
-	@FXML
 	ProgressBar progress;
 	@FXML
 	ContextMenu content;
@@ -64,30 +70,31 @@ public class ControlMyFiles implements Platform, Initializable {
 	ImageView imgDL;
 	@FXML
 	ImageView imgSearch;
+	@FXML
+	Text textHome;
 
 	static Downloads download;
 	static Uploads upload;
-	static APIFolder folder;
+	static APIFTPFolder folder;
 	static FTPClient ftp;
 	static FTPSearch ftpsea;
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
 		ftp = new FTPClient();
-		Data.put(Type.ITextPath, textPath);
-		folder = new APIFolder(ftp, box.getChildren(), tableview.getChildren());
+		ftp.enterLocalActiveMode();
+		
+		folder = new APIFTPFolder(ftp, box.getChildren(), tableview.getChildren());
 		ftpsea = new FTPSearch(ftp);
 		Init();
 		scrollPane.viewportBoundsProperty().addListener((u, v, e) -> {
 			tableview.setPrefSize(e.getWidth(), e.getHeight());
 		});
-		imgUL.setImage(Loader.loadImage("upload.png"));
-		imgDL.setImage(Loader.loadImage("download.png"));
 		imgSearch.setImage(Loader.loadImage("search.png"));
+
 		fileRoot.setGraphic(APILoader.getIconFile("home folder", 25, 25));
-		List<ImageView> img = APILoader.getListImageViews(
-				new String[] { "rename", "refresh","search", "folder", "share", "upload", "upload", "download", "delete" }, 20,
-				20);
+		List<ImageView> img = APILoader.getListImageViews(new String[] { "rename", "refresh", "search", "copy",
+				"folder", "share", "upload", "upload", "download", "delete" }, 20, 20);
 
 		for (int i = 0; i < img.size(); i++)
 			content.getItems().get(i).setGraphic(img.get(i));
@@ -96,20 +103,24 @@ public class ControlMyFiles implements Platform, Initializable {
 				EVSearch(new ActionEvent());
 
 		});
+		fileRoot.setText("My Cloud");
 		fileRoot.setOnMouseClicked(folder);
-		try {
-			folder.make();
-		} catch (IOException e1) {
-			e1.printStackTrace();
-		}
+		folder.make();
+		textHome.setOnMouseClicked(e -> {
+			if (!folder.getCurParent().equals(APIFTPFile.getRoot())) {
+				folder.setCurParent(APIFTPFile.getRoot());
+				folder.getFolder().remove(2, folder.getFolder().size());
+				folder.make();
+			}
+		});
 	}
 
 	private void Init() {
 		try {
-			download = new Downloads(ftp, "E:\\Downloads");
-			upload = new Uploads(ftp);
 			ftp.connect(InetAddress.getLocalHost(), 21);
 			ftp.login("donly", "root");
+			download = new Downloads(ftp, "E:\\Downloads");
+			upload = new Uploads(ftp);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -122,7 +133,7 @@ public class ControlMyFiles implements Platform, Initializable {
 				ftpsea.getThread().stop();
 			}
 			folder.make();
-			textPath.setText("");
+			Print.out(Status.No_Notification, "");
 			txtSearch.setText("");
 		} catch (Exception ex) {
 			ex.printStackTrace();
@@ -132,23 +143,23 @@ public class ControlMyFiles implements Platform, Initializable {
 	public void EVSearch(ActionEvent e) {
 		if (txtSearch.getText().length() > 0) {
 			folder.getData().clear();
-			ftpsea.search(folder.getCurrentPathFile(), txtSearch.getText());
+			ftpsea.search(folder.getCurParent(), txtSearch.getText());
 
 			Platform.start(() -> {
 				System.out.println(ftpsea.isRunning());
 				while (ftpsea.isRunning()) {
-					if(!ftpsea.getResult().isEmpty())
-						folder.addFileIteam(ftpsea.toListItem());
+					if (!ftpsea.getResult().isEmpty())
+						folder.addFileItem(ftpsea.toListItem());
 					try {
 						Thread.sleep(300);
 					} catch (InterruptedException e1) {
 						e1.printStackTrace();
 					}
 				}
-				folder.addFileIteam(ftpsea.toListItem());
-				textPath.setText("Resut find: " + folder.getData().size() + "  finish!...");
+				folder.addFileItem(ftpsea.toListItem());
+				Print.out("Resut find: " + folder.getData().size() + "  finish!...");
 			});
-		} 
+		}
 		txtSearch.requestFocus();
 	}
 
@@ -158,7 +169,7 @@ public class ControlMyFiles implements Platform, Initializable {
 			String strKey = temp.getText().toUpperCase().replace(' ', '_');
 			strKey = strKey.replace('.', '_');
 			FTPFileItem item = (FTPFileItem) folder.getCurItem();
-			textPath.setText("Current Item: " + (item == null ?"no item seleted!" :item.getFile().getName()));
+			Print.out("Current Item: " + (item == null ? "no item seleted!" : item.getFTPFile().getName()));
 			Event key = Event.valueOf(strKey);
 
 			switch (key) {
@@ -166,34 +177,43 @@ public class ControlMyFiles implements Platform, Initializable {
 				FileChooser chooser = new FileChooser();
 				chooser.setTitle("Upload");
 				List<File> files = chooser.showOpenMultipleDialog(box.getScene().getWindow());
-				
+
 				if (files != null) {
-					String path = folder.getCurrentPathFile();
+					String path = folder.getCurParent().getPathname();
 
 					for (File cur : files)
 						upload.uploads(cur, path);
 				}
 				break;
+			case COPY_PATH:
+				Clipboard clip = Toolkit.getDefaultToolkit().getSystemClipboard();
+				clip.setContents(new StringSelection(item.getFTPFile().getAbsolutepath()), null);
+				break;
 			case UPLOAD_FOLDER:
 				DirectoryChooser FCchooser = new DirectoryChooser();
 				FCchooser.setTitle("Upload");
 				File file = FCchooser.showDialog(box.getScene().getWindow());
-				
+
 				if (file != null && file.exists()) {
-					String path = folder.getCurrentPathFile();
+					String path = folder.getCurParent().getAbsolutepath();
 					upload.uploads(file, path);
 				}
 				break;
 
 			case DOWNLOAD:
-				if (item.getFile() != null) {
-					download.download(folder.getCurrentPathFile(), item.getFile());
+				DirectoryChooser dir = new DirectoryChooser();
+				dir.setTitle("Save");
+				File dirfile = dir.showDialog(new Stage());
+				if (item.getFTPFile() != null) {
+					Print.out(Content.DOWLOAD, item);
+					download.setRootFolder(dirfile.getAbsolutePath());
+					download.download(item.getFTPFile());
 				}
 				break;
 			case DELETE:
 				if (item == null)
 					break;
-				if (Notification.showYESNO("Bạn có muốn xóa file: " + item.getFile().getName() + "?"))
+				if (Notification.showYESNO("Bạn có muốn xóa file: " + item.getFTPFile().getName() + "?"))
 					folder.removeItem(folder.getCurItem());
 				break;
 			case SEARCH:
@@ -205,7 +225,7 @@ public class ControlMyFiles implements Platform, Initializable {
 			case NEW_FOLDER:
 				String fol = Notification.show("Folder name", "");
 				if (fol != null) {
-					ftp.mkd(folder.getCurrentPathFile() + "\\" + fol);
+					ftp.mkd(folder.getCurrentPath() + "\\" + fol);
 					reload();
 				}
 				break;
@@ -213,10 +233,11 @@ public class ControlMyFiles implements Platform, Initializable {
 				if (item == null)
 					throw new Exception("Lựa chọn không khả dụng");
 				else {
-					String name = item.getFile().getName();
+					String name = item.getFTPFile().getName();
 					String filenname = Notification.show("Folder name", name);
 					if (filenname != null)
-						folder.rename(item, filenname);
+						if (item.getFTPFile().rename(ftp, filenname))
+							item.setText(filenname);
 				}
 				break;
 			case MOVE_FILE:

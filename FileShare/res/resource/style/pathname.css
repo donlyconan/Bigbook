@@ -1,0 +1,12 @@
+.Text {
+	-fx-background-color: transparent;
+	-fx-font-family: 'cambria'; 
+	-fx-font-size: 13; 
+	-fx-background-radius: 6px;
+}
+
+.Text:hover {
+	-fx-background-color: green;
+	-fx-font-size: 15px;
+	-fx-font-weight: bold;
+}

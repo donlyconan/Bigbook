@@ -1,59 +1,50 @@
 package bigbook.listen.running;
 
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import java.io.IOException;
+import java.nio.channels.SocketChannel;
 
 import bigbook.Platform.Platform;
-import bigbook.transfer.data.Bytes;
+import bigbook.transfer.data.DataTransfer;
 
 public class Response implements Platform {
-	private ObjectOutputStream oos;
-	private ObjectInputStream ois;
+	private SocketChannel socket;
 
-	public Response(ObjectOutputStream oos, ObjectInputStream ois) {
-		super();
-		this.oos = oos;
-		this.ois = ois;
+	public Response(SocketChannel socket) {
+		this.socket = socket;
 	}
 
-	public Command handle(Bytes data) {
+	public void handle(DataTransfer data) throws IOException {
+		DataTransfer res = null;
 		switch (data.get()) {
-		case RPxFinishFile:
-			break;
 		case RPxLogin:
+			res = new DataTransfer(Command.RPxLogin, "Login success".getBytes());
+			socket.write(res.toByteBuffer());
 			break;
 		case RPxLogout:
 			break;
-		case RPxSendImage:
+		case RPxMAccount:
 			break;
-		case RPxSendMessage:
+		case RPxSConnectVoiceChat:
 			break;
-		case RPxSendingFile:
+		case RPxSFile:
 			break;
-		case RPxStatusFaceTime:
+		case RPxSFinishVoiceChat:
 			break;
-		case RPxStatusVoiceChat:
+		case RPxSImage:
+			break;
+		case RPxSMessage:
+			break;
 		default:
 			break;
-
 		}
-		return null;
 	}
 
-	public ObjectOutputStream getOos() {
-		return oos;
+	public SocketChannel getSocket() {
+		return socket;
 	}
 
-	public void setOos(ObjectOutputStream oos) {
-		this.oos = oos;
-	}
-
-	public ObjectInputStream getOis() {
-		return ois;
-	}
-
-	public void setOis(ObjectInputStream ois) {
-		this.ois = ois;
+	public void setSocket(SocketChannel socket) {
+		this.socket = socket;
 	}
 
 }

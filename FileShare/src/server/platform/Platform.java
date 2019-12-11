@@ -2,6 +2,7 @@ package server.platform;
 
 import java.util.Hashtable;
 
+import javafx.scene.Node;
 import javafx.scene.layout.StackPane;
 import server.api.APICache;
 
@@ -32,6 +33,12 @@ public interface Platform {
 	static enum Event {
 		UPLOAD, UPLOAD_FILE, UPLOAD_FOLDER, DOWNLOAD, NEW_FOLDER, DELETE, SEARCH, REFRESH,
 		SYNC, RENAME_FILE, RENAME_FOLDER, EDIT_FILE, MOVE_FILE,RENAME___,SHARE, RENAME, COPY_PATH
+	}
+	
+	public static void stackAddChilden(Node node)
+	{
+		StackPane stack = (StackPane) Data.get(Type.StackPane);
+		stack.getChildren().add(node);
 	}
 	
 	public static void show(Type type)

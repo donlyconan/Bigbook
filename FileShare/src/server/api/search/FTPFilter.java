@@ -7,6 +7,7 @@ public class FTPFilter implements FTPFileFilter {
 	public static enum Mode {
 		QUICK, SMART, ALL, HAFT_OF_ALL
 	}
+
 	private static final double SAFE = 2.5;
 
 	private String pathname;
@@ -17,16 +18,16 @@ public class FTPFilter implements FTPFileFilter {
 		this.pathname = pathname;
 		mode = Mode.QUICK;
 	}
-	
+
 	@Override
 	public boolean accept(FTPFile e) {
-		if(e.isFile())
-		{
-			if(e.getName().equalsIgnoreCase(pathname)) return true;
-			if(e.getName().startsWith(pathname) && (double) e.getName().length() / pathname.length() < SAFE) return true;
+		if (e.isFile()) {
+			if (e.getName().equalsIgnoreCase(pathname))
+				return true;
+			if (e.getName().startsWith(pathname) && (double) e.getName().length() / pathname.length() < SAFE)
+				return true;
 			return e.getName().endsWith(pathname);
-		}
-		else
+		} else
 			return true;
 	}
 

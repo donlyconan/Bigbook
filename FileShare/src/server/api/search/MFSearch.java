@@ -22,19 +22,21 @@ public class MFSearch implements Platform {
 		text = (Text) Data.get(Type.IMCTextPath);
 	}
 
-	@SuppressWarnings("deprecation")
 	public void search(String dir, String name) throws Exception {
 		this.stop();
 		index = 0;
-		
-		//Tam dung thread
+
+		// Tam dung thread
 		result.clear();
 		running = true;
 		File file = new File(dir);
+		File filename = new File(name);
 		
-		
-		//Khoi tao tim kiem file
-		if (file.exists()) {
+		if (filename.exists()) {
+			result.add(filename);
+		}
+		// Khoi tao tim kiem file
+		else if (file.exists()) {
 			thread = Platform.start(() -> {
 				MFFilter fil = new MFFilter(name);
 				text.setText("Resut find: " + result.size());
@@ -47,13 +49,13 @@ public class MFSearch implements Platform {
 
 	}
 
-	
-	//De quy tim kiem file dua tren filter
+	// De quy tim kiem file dua tren filter
 	public void exceutingMF(File[] files, MFFilter fil, String name) {
-		if(files == null)
+		if (files == null)
 			return;
 		for (File item : files) {
 			if (item.isFile()) {
+				index++;
 				System.out.println(item);
 				result.add(item);
 			} else {
@@ -72,23 +74,15 @@ public class MFSearch implements Platform {
 		return items;
 	}
 
-//	public static void main(String[] args) throws Exception {
-//		MFSearch mfs = new MFSearch();
-//		mfs.search("E:\\Downloads", "jar");
-//	}
-	
 	@SuppressWarnings("deprecation")
-	public void stop()
-	{
-		if(thread != null && thread.isAlive())
-		{
+	public void stop() {
+		if (thread != null && thread.isAlive()) {
 			thread.stop();
 		}
 	}
-	
+
 	@SuppressWarnings("deprecation")
-	public void restart()
-	{
+	public void restart() {
 		thread.suspend();
 		thread.resume();
 	}
@@ -125,6 +119,14 @@ public class MFSearch implements Platform {
 		this.result = result;
 	}
 
+	public int getIndex() {
+		return index;
+	}
+
+	public void setIndex(int index) {
+		this.index = index;
+	}
 	
 	
+
 }
