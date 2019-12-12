@@ -10,32 +10,32 @@ import java.nio.ByteBuffer;
 
 //Mã hóa lưu truyền file
 public interface Transfer extends Platform, Serializable {
-	public static final int HAFT_OF_KILOBYTE = 512;
-	public static final int KILOBYTE = 1024;
-	public static final int MEGABYTE = (int) Math.pow(KILOBYTE, 2);
-	public static final int GIGABYTE = (int) Math.pow(MEGABYTE, 2);
-	public static final int PETABYTE = (int) Math.pow(GIGABYTE, 2);
+	public static final int KB = 1024;
+	public static final int MB = (int) Math.pow(KB, 2);
+	public static final int GB = (int) Math.pow(MB, 2);
+	public static final int CAPACITY_SMALL = 4 * KB;
+	public static final int CAPACITY_MEDIUM = 64 * KB;
+	public static final int CAPACITY_LARGE = 1024 * KB;
+	public static final int QUATER_OF_KB = KB / 4;
+	public static final int HAFT_OF_KB = KB / 2;
 
-	public Command get();
+	public String code();
 
-	public byte[] getData();
+	public byte[] data();
 
 	public ByteBuffer toByteBuffer() throws Exception;
 
-	public static ByteBuffer toByteBuffer(Object obj) throws IOException {
-		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		ObjectOutputStream oos = new ObjectOutputStream(baos);
-		oos.writeObject(obj);
-		oos.flush();
-		oos.close();
-		baos.close();
-		return ByteBuffer.wrap(baos.toByteArray());
+	public static ByteBuffer toByteBuffer(Object object) throws IOException {
+		byte[] data = toByteArray(object);
+		ByteBuffer buffer = ByteBuffer.allocate(data.length);
+		buffer.put(data);
+		return buffer;
 	}
-
-	public static byte[] toByteArray(Object obj) throws IOException {
+	
+	public static byte[] toByteArray(Object object) throws IOException {
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		ObjectOutputStream oos = new ObjectOutputStream(baos);
-		oos.writeObject(obj);
+		oos.writeObject(object);
 		oos.flush();
 		oos.close();
 		baos.close();

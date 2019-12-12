@@ -12,7 +12,7 @@ public interface Work extends Kernel {
 	//Trả lời một thông điệp hay yêu cầu nào đó.
 	public static Object rev(ObjectInputStream ois) throws Exception
 	{
-		byte[] buff = new byte[10 * Transfer.KILOBYTE];
+		byte[] buff = new byte[10 * Transfer.HAFT_OF_KB];
 		ois.read(buff);
 		return Transfer.getObject(buff);
 	}

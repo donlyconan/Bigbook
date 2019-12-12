@@ -14,7 +14,7 @@ import java.util.concurrent.ExecutorService;
 public class Server extends JFrame  
 {
 
-	int RTSP_dest_port = 0;
+	int RTSP_dest_port = 8888;
 	Socket RTSPsocket; //socket used to send/receive RTSP messages
     	JLabel label;
 
@@ -30,13 +30,13 @@ public class Server extends JFrame
           
 
     public static void main(String[] args) {
-        new Server().startServer(args[0]);
+        new Server().startServer(4444);
     }
 
     //------------------------------------
     //main
     //------------------------------------
-    public void startServer(String port) {
+    public void startServer(int port) {
 
 
    //create a Server object
@@ -48,12 +48,11 @@ public class Server extends JFrame
         theServer.setVisible(true);
 
         //get RTSP socket port from the command line
-        int RTSPport = Integer.parseInt(port);
-        theServer.RTSP_dest_port = RTSPport;
+        theServer.RTSP_dest_port = port;
         //Initiate TCP connection with the client for the RTSP session
 	
 	try{
-	    ServerSocket listenSocket = new ServerSocket(RTSPport);
+	    ServerSocket listenSocket = new ServerSocket(port);
 
        
 	int id = 0;

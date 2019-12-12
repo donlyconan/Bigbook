@@ -1,10 +1,9 @@
 package gui;
 
-import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadPoolExecutor;
+import java.io.IOException;
 
 import bigbook.Platform.Platform;
-import bigbook.listen.Listen;
+import bigbook.listen.action.Server;
 import javafx.application.Application;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -18,9 +17,15 @@ public class Run extends Application implements Platform
 	{
 		try {
 			Plugin.load();
-			Listen listen = new Listen();
-			ThreadPoolExecutor exec = (ThreadPoolExecutor) Executors.newFixedThreadPool(2);
-			exec.execute(listen);
+			Server server = new Server();
+			Platform.start(() -> {
+				try {
+					server.start();
+				} catch (IOException e1) {
+					e1.printStackTrace();
+					System.exit(0);
+				}
+			});
 			
 			Parent root = (Parent) Share.get(Attribute.FXMLControl);
 			Scene scene = new Scene(root);

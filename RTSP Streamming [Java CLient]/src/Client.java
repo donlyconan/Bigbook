@@ -156,10 +156,10 @@ public class Client{
             System.exit(0);
         }
         */
-        String serverAddress = argv[0];
-        int serverPort = Integer.parseInt(argv[1]);
-	rtpPort = Integer.parseInt(argv[2]);
-        mediaFile = argv[3];
+        String serverAddress = "localhost";
+        int serverPort = 4444;
+	rtpPort = 4444;
+        mediaFile = "6";
         
         Client objRtspClient = new Client();
         objRtspClient.serverIpAddress = InetAddress.getByName("localhost");

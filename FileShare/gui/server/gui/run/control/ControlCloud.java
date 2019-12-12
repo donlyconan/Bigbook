@@ -83,7 +83,7 @@ public class ControlCloud implements Platform, Initializable {
 	public void initialize(URL location, ResourceBundle resources) {
 		ftp = new FTPClient();
 		ftp.enterLocalActiveMode();
-		
+
 		folder = new APIFTPFolder(ftp, box.getChildren(), tableview.getChildren());
 		ftpsea = new FTPSearch(ftp);
 		Init();
@@ -113,6 +113,7 @@ public class ControlCloud implements Platform, Initializable {
 				folder.make();
 			}
 		});
+		
 	}
 
 	private void Init() {
@@ -186,8 +187,10 @@ public class ControlCloud implements Platform, Initializable {
 				}
 				break;
 			case COPY_PATH:
-				Clipboard clip = Toolkit.getDefaultToolkit().getSystemClipboard();
-				clip.setContents(new StringSelection(item.getFTPFile().getAbsolutepath()), null);
+				if (item != null) {
+					Clipboard clip = Toolkit.getDefaultToolkit().getSystemClipboard();
+					clip.setContents(new StringSelection(item.getFTPFile().getAbsolutepath()), null);
+				}
 				break;
 			case UPLOAD_FOLDER:
 				DirectoryChooser FCchooser = new DirectoryChooser();
@@ -201,20 +204,22 @@ public class ControlCloud implements Platform, Initializable {
 				break;
 
 			case DOWNLOAD:
-				DirectoryChooser dir = new DirectoryChooser();
-				dir.setTitle("Save");
-				File dirfile = dir.showDialog(new Stage());
-				if (item.getFTPFile() != null) {
-					Print.out(Content.DOWLOAD, item);
-					download.setRootFolder(dirfile.getAbsolutePath());
-					download.download(item.getFTPFile());
+				if (item != null) {
+					DirectoryChooser dir = new DirectoryChooser();
+					dir.setTitle("Save");
+					File dirfile = dir.showDialog(new Stage());
+					if (item.getFTPFile() != null) {
+						Print.out(Content.DOWLOAD, item);
+						download.setRootFolder(dirfile.getAbsolutePath());
+						download.download(item.getFTPFile());
+					}
 				}
 				break;
 			case DELETE:
-				if (item == null)
-					break;
-				if (Notification.showYESNO("Bạn có muốn xóa file: " + item.getFTPFile().getName() + "?"))
-					folder.removeItem(folder.getCurItem());
+				if (item != null) {
+					if (Notification.showYESNO("Bạn có muốn xóa file: " + item.getFTPFile().getName() + "?"))
+						folder.removeItem(folder.getCurItem());
+				}
 				break;
 			case SEARCH:
 				EVSearch(e);
@@ -230,9 +235,7 @@ public class ControlCloud implements Platform, Initializable {
 				}
 				break;
 			case RENAME___:
-				if (item == null)
-					throw new Exception("Lựa chọn không khả dụng");
-				else {
+				if (item != null) {
 					String name = item.getFTPFile().getName();
 					String filenname = Notification.show("Folder name", name);
 					if (filenname != null)

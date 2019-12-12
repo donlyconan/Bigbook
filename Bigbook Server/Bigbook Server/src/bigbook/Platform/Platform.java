@@ -6,26 +6,15 @@ import java.util.Hashtable;
 import bigbook.reprement.group.Group;
 
 //Nền tảng ứng dụng
-public interface Platform {
+public interface Platform  {
 	//Dữ liệu chia sẻ
 	public static final Hashtable<Attribute, Object> Share = new Hashtable<Attribute, Object>();
 	public static final Hashtable<String, SocketChannel> USERS_LOGIN = new Hashtable<String, SocketChannel>();
 	public static final Hashtable<String, Group> GROUPS = new Hashtable<String, Group>();
 	
 	
-	public static enum Command {
+	public static enum Request {
 		//Yêu cầu
-		RPxMAccount,
-		RPxLogin , 
-		RPxLogout,
-		RPxSMessage,
-		RPxSImage, 
-		RPxSFile, 
-		RPxSConnectVoiceChat,
-		RPxSFinishVoiceChat,
-		
-		
-		//Phản hồi
 		RQxMAccount,
 		RQxLogin, 
 		RQxLogout,
@@ -35,6 +24,19 @@ public interface Platform {
 		RQxSConnectVoiceChat,
 		RQxSFinishVoiceChat
 	}
+	
+	public static enum Respone {
+		//Phản hồi
+		RPxMAccount,
+		RPxLogin , 
+		RPxLogout,
+		RPxSMessage,
+		RPxSImage, 
+		RPxSFile, 
+		RPxSConnectVoiceChat,
+		RPxSFinishVoiceChat
+	}
+	
 	
 	public static enum Attribute {FXMLControl, ITextArea}
 	

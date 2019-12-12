@@ -9,18 +9,16 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import bigbook.Platform.Platform;
-import bigbook.Platform.Transfer;
 import bigbook.reprement.Account;
-import bigbook.transfer.data.DataTransfer;
+import bigbook.transfer.DataTransfer;
 
 public class SocketClient implements Platform {
 	
-	public static void main(String[] args) throws InterruptedException, IOException {
-		InetSocketAddress crunchifyAddr = new InetSocketAddress("localhost", 8888);
-		SocketChannel crunchifyClient = SocketChannel.open(crunchifyAddr);
- 
-		Logger.getAnonymousLogger().log(Level.CONFIG,"Connecting to Server on port 1111...");
- 
+	public static void main(String[] args) throws InterruptedException, IOException, ClassNotFoundException {
+		InetSocketAddress inet = new InetSocketAddress("localhost", 8888);
+		SocketChannel socketClient = SocketChannel.open(inet);
+		
+		Logger.getAnonymousLogger().log(Level.CONFIG,"Connecting to Server on port 8888...");
 		ArrayList<String> companyDetails = new ArrayList<String>();
  
 		// create a ArrayList with companyName list
@@ -31,38 +29,43 @@ public class SocketClient implements Platform {
 		companyDetails.add("Crunchify");
 		
 		Thread thread = new Thread(()-> {
-//			while(true)
-//			{
+			while(true)
+			{
 				ByteBuffer buff = ByteBuffer.allocate(1024);
 				try {
-					crunchifyClient.read(buff);
+					socketClient.read(buff);
 					DataTransfer data = DataTransfer.valuesOf(buff.array());
-					System.out.println(data);
+					System.out.println("Reciver:" + data);
 					buff.clear();
 				} catch (IOException e) {
 					e.printStackTrace();
 				} catch (ClassNotFoundException e) {
 					e.printStackTrace();
-//				}
+				}
 			}
 		});
-		
 		thread.start();
+		
 		Account acc = new Account("donlyconan", "root");
-		DataTransfer data = new DataTransfer(Command.RQxLogin, Transfer.toByteArray(acc));
-		crunchifyClient.write(data.toByteBuffer());
-// 
-//		for (int i = 0; i <= 3; i++) {
-// 
-//			byte[] message = new String(companyDetails.get(i%companyDetails.size())).getBytes();
-//			DataTransfer  data = new DataTransfer(Command.RQxSMessage, message);
-//			crunchifyClient.write(data.toByteBuffer());
-// 
-//			System.out.println("sending: " + companyDetails.get(i%companyDetails.size()));
+		DataTransfer data = new DataTransfer(Request.RQxLogin, acc);
+		socketClient.write(data.toByteBuffer());
+		
+		Thread.sleep(2000);
  
-			Thread.sleep(5000);
-//		}
-		crunchifyClient.finishConnect();
-		crunchifyClient.close();
+		for (int i = 0; i <= 1000; i++) {
+ 
+			String content = companyDetails.get(i%companyDetails.size());
+			DataTransfer  rename = new DataTransfer(Request.RQxSMessage, content);
+			socketClient.write(rename.toByteBuffer());
+ 
+			System.out.println("sending: " + rename);
+ 
+			Thread.sleep(2000);
+			
+			if(!socketClient.isConnected())
+				break;
+		}
+		socketClient.finishConnect();
+		socketClient.close();
 	}
 }
