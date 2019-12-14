@@ -11,48 +11,47 @@ import java.util.logging.Level;
 
 import org.apache.commons.net.ftp.FTP;
 import org.apache.commons.net.ftp.FTPClient;
+import org.apache.commons.net.ftp.FTPFile;
 
-import javafx.concurrent.Task;
 import javafx.util.Pair;
 import server.api.Notification;
 import server.api.Print;
+import server.api.search.MFSearch.Status;
 import server.platform.Platform;
 
-public class Uploads extends Task<Boolean> implements Platform {
+public class Uploads implements Platform {
 	private FTPClient ftp;
 	private Queue<Pair<String, File>> heap;
 	private Pair<String, File> curItem;
 	private Boolean result;
+	public Status status;
 
 	public Uploads(FTPClient ftp) {
 		super();
 		this.ftp = ftp;
 		heap = new LinkedList<Pair<String, File>>();
+		status = Status.FINISH;
 	}
 
 	public void uploads(File file, String dir) throws Exception {
-		if (heap.size() > 15) {
-			throw new Exception("Out size!");
-		}
-
-		Notification.print("Header", "bl = " + isRunning());
 		heap.add(new Pair<String, File>(dir, file));
-
-		if (!isRunning()) {
-			Platform.start(this);
-		}
 	}
 
-	@Override
-	public void run() {
+	public void handle() {
 		Notification.print("Upload", "Heap run = " + heap.isEmpty());
 		Print.out("Uploading...");
+		status = Status.START;
 
 		while (!heap.isEmpty()) {
 			curItem = heap.poll();
+			status = Status.RUNNING;
+			
 			if (curItem.getValue().isFile()) {
-				String curPath = curItem.getKey() + "\\" + curItem.getValue().getName();
 				try {
+					String curPath = curItem.getKey() + "/" + curItem.getValue().getName();
+					curPath = renameFTPFolder(curPath, ftp);
+					System.out.println("Upload file: " + curPath);
+
 					sendFile(curPath, curItem.getValue());
 				} catch (IOException e) {
 					e.printStackTrace();
@@ -65,13 +64,9 @@ public class Uploads extends Task<Boolean> implements Platform {
 				}
 		}
 
+		status = Status.FINISH;
 		Print.log(Level.INFO, "End Upload!");
 		Print.out(result ? "Upload: Finish!" : "Upload: Error!");
-	}
-
-	@Override
-	protected Boolean call() throws Exception {
-		return null;
 	}
 
 	public synchronized void sendFile(String folder, File file) throws IOException {
@@ -87,24 +82,29 @@ public class Uploads extends Task<Boolean> implements Platform {
 		}
 	}
 
+	/**
+	 * CurKey : localFolder on cloud of user curItem: files on my computer
+	 */
 	public synchronized void sendFolder() throws IOException {
-		synchronized (ftp) {
-			String pathname = curItem.getValue().getAbsolutePath(), pathfile = null;
-			int start = pathname.length() - curItem.getValue().getName().length();
-			ftp.makeDirectory(curItem.getKey() + curItem.getValue().getName());
-			List<File> lisfile = new ArrayList<File>();
-			toList(curItem.getValue().listFiles(), lisfile);
+		String pathname = curItem.getValue().getAbsolutePath(), pathfile = null;
+		int start = pathname.length();
 
-			for (File item : lisfile) {
-				pathname = item.getAbsolutePath();
-				pathfile = curItem.getKey() + "\\" + pathname.substring(start, pathname.length());
-				System.out.println(pathfile);
+		String curPath = curItem.getKey() + curItem.getValue().getName();
+		curPath = renameFTPFolder(curPath, ftp);
+		ftp.makeDirectory(curPath);
 
-				if (item.isFile())
-					sendFile(pathfile, item);
-				else
-					ftp.makeDirectory(pathfile);
-			}
+		List<File> lisfile = new ArrayList<File>();
+		toList(curItem.getValue().listFiles(), lisfile);
+
+		for (File item : lisfile) {
+			pathname = item.getAbsolutePath();
+			pathfile = curPath + "/" + pathname.substring(start, pathname.length());
+			System.out.println(pathfile);
+
+			if (item.isFile())
+				sendFile(pathfile, item);
+			else
+				ftp.makeDirectory(pathfile);
 		}
 	}
 
@@ -115,6 +115,29 @@ public class Uploads extends Task<Boolean> implements Platform {
 				toList(item.listFiles(), list);
 			}
 		}
+	}
+
+	public static String renameFTPFolder(String pathname, FTPClient ftp) throws IOException {
+		synchronized (ftp) {
+			int index = 1, lenght = pathname.length();
+			FTPFile file = ftp.mlistFile(pathname);
+
+			String extend = "";
+			if (file != null && file.isFile()) {
+				int last = file.getName().lastIndexOf('.');
+				if (last != -1 && last < lenght) {
+					extend = pathname.substring(last, lenght);
+					lenght = last;
+				}
+			}
+
+			while (file == null) {
+				pathname = pathname.substring(0, lenght) + "(" + index + ")" + extend;
+				file = ftp.mlistFile(pathname);
+				index++;
+			}
+		}
+		return pathname;
 	}
 
 	public static String cutText(String text) {

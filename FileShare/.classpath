@@ -9,6 +9,6 @@
 	<classpathentry kind="src" path="res"/>
 	<classpathentry kind="src" path="gui"/>
 	<classpathentry kind="lib" path="Data/commons-net-3.6.jar"/>
-	<classpathentry kind="lib" path="/usr/lib/java/jdk1.8.0_231/jre/lib/ext/jfxrt.jar"/>
+	<classpathentry kind="lib" path="/usr/lib/jvm/jdk1.8.0_231/jre/lib/ext/jfxrt.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

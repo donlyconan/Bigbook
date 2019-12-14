@@ -18,7 +18,7 @@ public class Run extends Application implements Platform {
 	@Override
 	public void start(Stage primaryStage) throws Exception {
 		Print.log(Level.INFO, "Loading...");
-		
+
 		try {
 			Loader.Load();
 			Scene scene = new Scene((Parent) Data.get(Type.FXController));
@@ -26,9 +26,9 @@ public class Run extends Application implements Platform {
 			primaryStage.getIcons().add(APILoader.getIconFile("Java", 30, 30).getImage());
 			primaryStage.setTitle("File Share");
 			primaryStage.setOnCloseRequest(e -> {
-				if (Notification.showYESNO("Bạn có muốn thoát không?"))
+				if (Notification.showYESNO("Do you want to exit?")) {
 					System.exit(0);
-				
+				}
 			});
 			primaryStage.centerOnScreen();
 			stage = primaryStage;

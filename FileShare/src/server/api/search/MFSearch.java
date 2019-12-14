@@ -44,6 +44,7 @@ public class MFSearch implements Platform {
 		if (filename.exists()) {
 			result.add(filename);
 			Print.out("Finish! result find: " + result.size());
+			status = Status.FINISH;
 		}
 		// Khoi tao tim kiem file
 		else if (file.exists()) {
@@ -56,7 +57,7 @@ public class MFSearch implements Platform {
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
-				
+				status = Status.FINISH;
 			});
 		} else {
 			
@@ -64,7 +65,6 @@ public class MFSearch implements Platform {
 			throw new Exception("File not found!");
 		}
 
-		status = Status.FINISH;
 	}
 
 	// De quy tim kiem file dua tren filter
@@ -79,7 +79,6 @@ public class MFSearch implements Platform {
 				thread.wait();
 			}
 		}
-		
 		status = Status.RUNNING;
 
 		if (files != null) {
@@ -88,10 +87,12 @@ public class MFSearch implements Platform {
 					index++;
 					load++;
 					result.add(item);
-					
+					System.out.println(item);
 				} else {
 					
 					if (item.getName().equalsIgnoreCase(name)) {
+						index++;
+						load++;
 						result.add(item);
 					}
 					
@@ -116,7 +117,7 @@ public class MFSearch implements Platform {
 
 //	public static void main(String[] args) throws Exception {
 //		MFSearch ms = new MFSearch();
-//		ms.search("/home", "jfxrt.jar");
+//		ms.search("/usr", "jfxrt.jar");
 //		System.out.println("Search");
 //	}
 

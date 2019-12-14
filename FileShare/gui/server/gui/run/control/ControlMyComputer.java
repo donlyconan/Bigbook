@@ -119,7 +119,7 @@ public class ControlMyComputer implements Platform, Initializable {
 							folder.addFileIteam(mfsea.toListItem());
 						}
 
-						Print.out("Result find: " + mfsea.getIndex() + "  can next!");
+						Print.out("Result find: " + mfsea.getIndex() + "  loading...!");
 
 						try {
 							Thread.sleep(20);

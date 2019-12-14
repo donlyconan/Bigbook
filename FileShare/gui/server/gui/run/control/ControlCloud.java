@@ -9,6 +9,8 @@ import java.net.InetAddress;
 import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.logging.Level;
 
 import org.apache.commons.net.ftp.FTPClient;
@@ -78,6 +80,7 @@ public class ControlCloud implements Platform, Initializable {
 	static APIFTPFolder folder;
 	static FTPClient ftp;
 	static FTPSearch ftpsea;
+	static ExecutorService threadPool;
 
 	@Override
 	public void initialize(URL location, ResourceBundle resources) {
@@ -125,13 +128,18 @@ public class ControlCloud implements Platform, Initializable {
 			}
 		});
 
+		threadPool = Executors.newFixedThreadPool(3);
 	}
 
 	private void Init() {
 		try {
-			ftp.connect(InetAddress.getLocalHost(), 21);
-			ftp.login("donly", "root");
-			download = new Downloads(ftp, "E:\\Downloads");
+			ftp.setConnectTimeout(30);
+			ftp.connect(InetAddress.getByName("192.168.1.150"), 21);
+			boolean res = ftp.login("donly", "root");
+			if(!res)
+				Print.log(Level.WARNING, "Can't connected to server!");
+			
+			download = new Downloads(ftp);
 			upload = new Uploads(ftp);
 			folder.make();
 		} catch (IOException e) {
@@ -140,9 +148,9 @@ public class ControlCloud implements Platform, Initializable {
 	}
 
 	private void reload() {
+		Print.out("Loading...");
 		folder.make();
 		ftpsea.stop();
-		Print.out("Loading...");
 		txtSearch.setText("");
 	}
 
@@ -151,12 +159,12 @@ public class ControlCloud implements Platform, Initializable {
 			folder.getData().clear();
 			ftpsea.search(folder.getCurParent(), txtSearch.getText());
 
-			Platform.start(() -> {
+			threadPool.execute(() -> {
 				System.out.println(ftpsea.getStatus());
 				while (ftpsea.getStatus() != Status.FINISH) {
 					if (!ftpsea.getResult().isEmpty())
 						folder.addFileItem(ftpsea.toListItem());
-					Print.out("Result find: " + ftpsea.getIndex() + "  can next!");
+					Print.out("Result find: " + ftpsea.getIndex() + "  loading...!");
 					try {
 						Thread.sleep(300);
 					} catch (InterruptedException e1) {
@@ -190,6 +198,9 @@ public class ControlCloud implements Platform, Initializable {
 
 					for (File cur : files)
 						upload.uploads(cur, path);
+
+					if (upload.status == Status.FINISH)
+						threadPool.execute(() -> upload.handle());
 				}
 				break;
 			case COPY_PATH:
@@ -206,24 +217,36 @@ public class ControlCloud implements Platform, Initializable {
 				if (file != null && file.exists()) {
 					String path = folder.getCurParent().getAbsolutepath();
 					upload.uploads(file, path);
+
+					if (upload.status == Status.FINISH)
+						threadPool.execute(() -> upload.handle());
 				}
 				break;
 
 			case DOWNLOAD:
 				if (item != null) {
-					DirectoryChooser dir = new DirectoryChooser();
-					dir.setTitle("Save");
-					File dirfile = dir.showDialog(new Stage());
+					if (download.checkRoot()) {
+						DirectoryChooser dir = new DirectoryChooser();
+						dir.setTitle("Save");
+						File dirfile = dir.showDialog(new Stage());
+						download.setRootFolder(dirfile.getAbsolutePath());
+						
+						Loader.writeProperties("DirectoryDownloads", dirfile.getAbsolutePath());
+					}
+
 					if (item.getFTPFile() != null) {
 						Print.out("Dowloading: " + item);
-						download.setRootFolder(dirfile.getAbsolutePath());
+
 						download.download(item.getFTPFile());
+
+						if (download.status == Status.FINISH)
+							threadPool.execute(() -> download.handle());
 					}
 				}
 				break;
 			case DELETE:
 				if (item != null) {
-					if (Notification.showYESNO("Bạn có muốn xóa file: " + item.getFTPFile().getName() + "?"))
+					if (Notification.showYESNO("Do you want to delete: " + item.getFTPFile().getName() + "?"))
 						folder.removeItem(folder.getCurItem());
 				}
 				break;

@@ -13,8 +13,8 @@ import javafx.stage.Stage;
 import resource.Loader;
 
 public class Notification {
-	public static void show(int code, String sms) {
-		Alert noti = new Alert(AlertType.ERROR, "[Error: 0x" + code + "] " + sms, ButtonType.CLOSE);
+	public static void show(Object code, String sms) {
+		Alert noti = new Alert(AlertType.ERROR, "[Error!: " + code + "] " + sms, ButtonType.CLOSE);
 //		((Stage) noti.getDialogPane().getScene().getWindow()).getIcons()
 //				.add(Loader.loadImage("dashbroad.png"));
 		noti.showAndWait();

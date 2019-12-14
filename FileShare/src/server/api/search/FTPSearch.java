@@ -44,6 +44,7 @@ public class FTPSearch implements Platform {
 		if (file != null && (!file.isFile() || file.isFile())) {
 			result.add(file);
 			Print.out("Result find: " + result.size() + "  finish!");
+			status = Status.FINISH;
 		} else {
 
 			thread = Platform.start(() -> {
@@ -56,9 +57,9 @@ public class FTPSearch implements Platform {
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}
+				status = Status.FINISH;
 			});
 		}
-		status = Status.FINISH;
 	}
 
 	public synchronized void excutingSearchFTP(APIFTPFile root, FTPFilter fil, String name)
@@ -100,15 +101,16 @@ public class FTPSearch implements Platform {
 			items.add(result.poll());
 		return items;
 	}
-
+//
 //	public static void main(String[] args) throws Exception {
 //		FTPClient ftp = new FTPClient();
-//		ftp.connect(InetAddress.getLocalHost(), 21);
+//		ftp.connect(InetAddress.getByName("192.168.1.150"), 21);
 //		System.out.println(ftp.login("donly", "root"));
 //		
-//		int res = ftp.sendCommand("scp -r donly@" +InetAddress.getLocalHost().getHostAddress()+ ":/donly/Image");
+////		
+////		int res = ftp.sendCommand("scp -r donly@" +InetAddress.getLocalHost().getHostAddress()+ ":/donly/Image");
 ////		ftp.printWorkingDirectory();
-//		System.out.println(res);
+////		System.out.println(res);
 //		
 //		ftp.logout();
 //		ftp.disconnect();
@@ -119,6 +121,7 @@ public class FTPSearch implements Platform {
 	public void stop() {
 		if (thread != null && thread.isAlive())
 			thread.stop();
+		status = Status.FINISH;
 	}
 
 	public Thread getThread() {

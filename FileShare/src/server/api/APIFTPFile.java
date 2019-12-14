@@ -17,31 +17,31 @@ public class APIFTPFile implements Platform {
 	private String pathname;
 
 	public APIFTPFile() {
-		directory = "\\";
-		pathname = "\\";
+		directory = "/";
+		pathname = "/";
 		file = new FTPFile();
 	}
 
 	public APIFTPFile(String directory, FTPFile ftpFile) {
 		this.directory = directory;
 		this.file = ftpFile;
-		this.pathname = directory + "\\" + ftpFile.getName();
+		this.pathname = directory + "/" + ftpFile.getName();
 	}
 
 	public APIFTPFile(APIFTPFile root, FTPFile file) {
 		this.directory = root.getPathname();
 		this.file = file;
-		this.pathname = directory + "\\" + file.getName();
+		this.pathname = directory + "/" + file.getName();
 	}
 
 	public APIFTPFile(APIFTPFile root, APIFTPFile file) {
 		this.directory = root.getPathname();
 		this.file = file.getFile();
-		this.pathname = directory + "\\" + file.getName();
+		this.pathname = directory + "/" + file.getName();
 	}
 
 	public boolean rename(FTPClient user, String new_name) throws IOException {
-		return user.rename(pathname, directory + "\\" + new_name);
+		return user.rename(pathname, directory + "/" + new_name);
 	}
 
 	public boolean delete(FTPClient user) throws IOException {
