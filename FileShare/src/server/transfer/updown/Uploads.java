@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
+import java.util.logging.Level;
 
 import org.apache.commons.net.ftp.FTP;
 import org.apache.commons.net.ftp.FTPClient;
@@ -15,7 +16,6 @@ import javafx.concurrent.Task;
 import javafx.util.Pair;
 import server.api.Notification;
 import server.api.Print;
-import server.api.Print.Content;
 import server.platform.Platform;
 
 public class Uploads extends Task<Boolean> implements Platform {
@@ -46,12 +46,12 @@ public class Uploads extends Task<Boolean> implements Platform {
 	@Override
 	public void run() {
 		Notification.print("Upload", "Heap run = " + heap.isEmpty());
-		Print.out(Content.START, "Start Upload...");
+		Print.out("Uploading...");
 
 		while (!heap.isEmpty()) {
 			curItem = heap.poll();
 			if (curItem.getValue().isFile()) {
-				String curPath = curItem.getKey() +"\\" + curItem.getValue().getName();
+				String curPath = curItem.getKey() + "\\" + curItem.getValue().getName();
 				try {
 					sendFile(curPath, curItem.getValue());
 				} catch (IOException e) {
@@ -65,7 +65,7 @@ public class Uploads extends Task<Boolean> implements Platform {
 				}
 		}
 
-		Print.out(Content.START, "End Upload!");
+		Print.log(Level.INFO, "End Upload!");
 		Print.out(result ? "Upload: Finish!" : "Upload: Error!");
 	}
 
@@ -74,33 +74,37 @@ public class Uploads extends Task<Boolean> implements Platform {
 		return null;
 	}
 
-	public void sendFile(String folder, File file) throws IOException {
-		Print.out("Path: " + cutText(file.getAbsolutePath()));
-		try (FileInputStream fis = new FileInputStream(file)) {
-			ftp.setFileType(FTP.BINARY_FILE_TYPE);
-			result = ftp.storeFile(folder, fis);
-			fis.close();
-		} catch (Exception e) {
-			e.printStackTrace();
+	public synchronized void sendFile(String folder, File file) throws IOException {
+		synchronized (ftp) {
+			Print.out("Path: " + cutText(file.getAbsolutePath()));
+			try (FileInputStream fis = new FileInputStream(file)) {
+				ftp.setFileType(FTP.BINARY_FILE_TYPE);
+				result = ftp.storeFile(folder, fis);
+				fis.close();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
 		}
 	}
 
-	public void sendFolder() throws IOException {
-		String pathname = curItem.getValue().getAbsolutePath(), pathfile = null;
-		int start = pathname.length() - curItem.getValue().getName().length();
-		ftp.makeDirectory(curItem.getKey() + curItem.getValue().getName());
-		List<File> lisfile = new ArrayList<File>();
-		toList(curItem.getValue().listFiles(), lisfile);
+	public synchronized void sendFolder() throws IOException {
+		synchronized (ftp) {
+			String pathname = curItem.getValue().getAbsolutePath(), pathfile = null;
+			int start = pathname.length() - curItem.getValue().getName().length();
+			ftp.makeDirectory(curItem.getKey() + curItem.getValue().getName());
+			List<File> lisfile = new ArrayList<File>();
+			toList(curItem.getValue().listFiles(), lisfile);
 
-		for (File item : lisfile) {
-			pathname = item.getAbsolutePath();
-			pathfile = curItem.getKey() + "\\" + pathname.substring(start, pathname.length());
-			System.out.println(pathfile);
+			for (File item : lisfile) {
+				pathname = item.getAbsolutePath();
+				pathfile = curItem.getKey() + "\\" + pathname.substring(start, pathname.length());
+				System.out.println(pathfile);
 
-			if (item.isFile())
-				sendFile(pathfile, item);
-			else
-				ftp.makeDirectory(pathfile);
+				if (item.isFile())
+					sendFile(pathfile, item);
+				else
+					ftp.makeDirectory(pathfile);
+			}
 		}
 	}
 

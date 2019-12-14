@@ -14,7 +14,6 @@ import org.apache.commons.net.ftp.FTPClient;
 import javafx.concurrent.Task;
 import server.api.APIFTPFile;
 import server.api.Print;
-import server.api.Print.Content;
 import server.platform.Platform;
 
 public class Downloads extends Task<Boolean> implements Platform {
@@ -45,7 +44,7 @@ public class Downloads extends Task<Boolean> implements Platform {
 
 	@Override
 	public void run() {
-		Print.out(Content.START, "Start downloading...");
+		Print.out("Downloading...");
 		while (!queue.isEmpty()) {
 			APIFTPFile curItem = queue.poll();
 			try {
@@ -60,7 +59,6 @@ public class Downloads extends Task<Boolean> implements Platform {
 			}
 		}
 		Print.out(result ? "Download: Finish!" : "Download: Error!");
-		Print.out(Content.END, "End Download!");
 	}
 
 	@Override
@@ -68,18 +66,20 @@ public class Downloads extends Task<Boolean> implements Platform {
 		return null;
 	}
 
-	public void recieve(String dir, String name) throws IOException {
-		String local = rootFolder + "\\" + name;
-		String path = dir + "\\" + name;
-		Print.out("Path: " + Uploads.cutText(path));
-		ftp.setFileType(FTP.BINARY_FILE_TYPE);
-		FileOutputStream fos = new FileOutputStream(local);
-		result = ftp.retrieveFile(path, fos);
-		fos.close();
+	public synchronized void recieve(String dir, String name) throws IOException {
+		synchronized (ftp) {
+			String local = rootFolder + "\\" + name;
+			String path = dir + "\\" + name;
+			Print.out("Download: " + Uploads.cutText(path));
+			ftp.setFileType(FTP.BINARY_FILE_TYPE);
+			FileOutputStream fos = new FileOutputStream(local);
+			result = ftp.retrieveFile(path, fos);
+			fos.close();
+		}
 	}
 
-	public void recieveFolder(APIFTPFile folder, String subdir) throws IOException {
-		Print.out(Content.DOWNLOD_FOLDER, folder);
+	public synchronized void recieveFolder(APIFTPFile folder, String subdir) throws IOException {
+		Print.out("Download: " + folder);
 		File mkd = new File(rootFolder + "\\" +  folder.getName());
 		int index = folder.getAbsolutepath().length() - folder.getName().length();
 		if(index == -1)
@@ -95,13 +95,15 @@ public class Downloads extends Task<Boolean> implements Platform {
 	}
 
 	public void toList(List<APIFTPFile> listfile, List<APIFTPFile> list, String root, int index) throws IOException {
-		for (APIFTPFile item : listfile) {
-			if (item.isFile()) {
-				list.add(item);
-			} else {
-				File mkd = new File(rootFolder + "\\" + root + "\\" + item.getName());
-				mkd.mkdir();
-				toList(item.listFile(ftp), list, root + "\\" + item.getName(), index);
+		synchronized (ftp) {
+			for (APIFTPFile item : listfile) {
+				if (item.isFile()) {
+					list.add(item);
+				} else {
+					File mkd = new File(rootFolder + "\\" + root + "\\" + item.getName());
+					mkd.mkdir();
+					toList(item.listFile(ftp), list, root + "\\" + item.getName(), index);
+				}
 			}
 		}
 	}

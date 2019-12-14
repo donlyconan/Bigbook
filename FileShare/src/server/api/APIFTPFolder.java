@@ -3,6 +3,7 @@ package server.api;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
 
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPFile;
@@ -13,7 +14,6 @@ import javafx.scene.Node;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.text.Text;
-import server.api.Print.Content;
 import server.gui.item.FTPFileItem;
 import server.gui.item.Folder;
 import server.platform.Platform;
@@ -22,8 +22,8 @@ public class APIFTPFolder implements Platform, EventHandler<MouseEvent> {
 	private FTPClient ftpClient;
 	private APIFTPFile curParent;
 	private Node curItem;
-	private ObservableList<Node> folder;
-	private ObservableList<Node> data;
+	private volatile ObservableList<Node> folder;
+	private volatile ObservableList<Node> data;
 
 	public APIFTPFolder(FTPClient ftp, ObservableList<Node> box, ObservableList<Node> flow) {
 		super();
@@ -34,46 +34,51 @@ public class APIFTPFolder implements Platform, EventHandler<MouseEvent> {
 	}
 
 	public void remove(Node node) {
-		int index = folder.indexOf(node);
-		if (index == 1) {
-			folder.remove(2, folder.size());
-			curParent = APIFTPFile.getRoot();
-		} else if (index > -1 && index < folder.size()) {
-			folder.remove(index + 1, folder.size());
-			curParent = ((Folder) folder.get(index)).getFtpFile();
+		synchronized (ftpClient) {
+			int index = folder.indexOf(node);
+			if (index == 1) {
+				folder.remove(2, folder.size());
+				curParent = APIFTPFile.getRoot();
+			} else if (index > -1 && index < folder.size()) {
+				folder.remove(index + 1, folder.size());
+				curParent = ((Folder) folder.get(index)).getFtpFile();
+			}
 		}
 	}
 
 	public void make() {
-		try {
-			data.clear();
-			List<APIFTPFile> files = curParent.listFile(ftpClient);
-			System.out.println(curParent);
-			for (APIFTPFile item : files) {
-				FTPFileItem fitem = new FTPFileItem(item);
-				fitem.setOnMouseClicked(this);
-				data.add(fitem);
+		synchronized (ftpClient) {
+			try {
+				data.clear();
+				List<APIFTPFile> files = curParent.listFile(ftpClient);
+				System.out.println(curParent);
+				for (APIFTPFile item : files) {
+					FTPFileItem fitem = new FTPFileItem(item);
+					fitem.setOnMouseClicked(this);
+					data.add(fitem);
+				}
+
+				if (data.isEmpty()) {
+					data.add(APILoader.createLableEmpty());
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
 			}
-			
-			if(data.isEmpty())
-			{
-				data.add(APILoader.createLableEmpty());
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
 		}
 	}
 
 	public boolean removeItem(Node item) throws IOException {
 		boolean res = false;
-		if (item instanceof FTPFileItem) {
-			FTPFileItem fitem = (FTPFileItem) item;
-			if (fitem.getFTPFile().isFile())
-				res = fitem.getFTPFile().delete(ftpClient);
-			else
-				res = fitem.getFTPFile().delete(ftpClient);
-			if (res)
-				data.remove(fitem);
+		synchronized (ftpClient) {
+			if (item instanceof FTPFileItem) {
+				FTPFileItem fitem = (FTPFileItem) item;
+				if (fitem.getFTPFile().isFile())
+					res = fitem.getFTPFile().delete(ftpClient);
+				else
+					res = fitem.getFTPFile().delete(ftpClient);
+				if (res)
+					data.remove(fitem);
+			}
 		}
 		return res;
 	}
@@ -97,8 +102,8 @@ public class APIFTPFolder implements Platform, EventHandler<MouseEvent> {
 	@Override
 	public void handle(MouseEvent event) {
 		Node node = (Node) event.getSource();
-		Print.out(Content.FXML_ATTRIB, node);
-		
+		Print.log(Level.INFO, node);
+
 		if (node instanceof FTPFileItem) {
 			curItem = node;
 			FTPFileItem item = (FTPFileItem) node;
@@ -117,7 +122,7 @@ public class APIFTPFolder implements Platform, EventHandler<MouseEvent> {
 		} else if (node instanceof Folder) {
 			remove(node);
 			make();
-		} else  {
+		} else {
 			folder.remove(2, folder.size());
 			curParent = APIFTPFile.getRoot();
 			make();
@@ -186,7 +191,6 @@ public class APIFTPFolder implements Platform, EventHandler<MouseEvent> {
 	public void setData(ObservableList<Node> data) {
 		this.data = data;
 	}
-
 
 	public APIFTPFile getCurParent() {
 		return curParent;

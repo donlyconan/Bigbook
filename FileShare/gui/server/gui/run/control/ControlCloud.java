@@ -9,6 +9,7 @@ import java.net.InetAddress;
 import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
 
 import org.apache.commons.net.ftp.FTPClient;
 
@@ -35,11 +36,10 @@ import resource.Loader;
 import server.api.APIFTPFile;
 import server.api.APIFTPFolder;
 import server.api.APILoader;
-import server.api.Print;
-import server.api.Print.Content;
-import server.api.Print.Status;
 import server.api.Notification;
+import server.api.Print;
 import server.api.search.FTPSearch;
+import server.api.search.MFSearch.Status;
 import server.gui.item.FTPFileItem;
 import server.platform.Platform;
 import server.transfer.updown.Downloads;
@@ -87,6 +87,7 @@ public class ControlCloud implements Platform, Initializable {
 		folder = new APIFTPFolder(ftp, box.getChildren(), tableview.getChildren());
 		ftpsea = new FTPSearch(ftp);
 		Init();
+
 		scrollPane.viewportBoundsProperty().addListener((u, v, e) -> {
 			tableview.setPrefSize(e.getWidth(), e.getHeight());
 		});
@@ -103,9 +104,10 @@ public class ControlCloud implements Platform, Initializable {
 				EVSearch(new ActionEvent());
 
 		});
+
 		fileRoot.setText("My Cloud");
 		fileRoot.setOnMouseClicked(folder);
-		folder.make();
+
 		textHome.setOnMouseClicked(e -> {
 			if (!folder.getCurParent().equals(APIFTPFile.getRoot())) {
 				folder.setCurParent(APIFTPFile.getRoot());
@@ -113,7 +115,16 @@ public class ControlCloud implements Platform, Initializable {
 				folder.make();
 			}
 		});
-		
+
+		scrollPane.vvalueProperty().addListener((e, u, v) -> {
+			if (ftpsea.getStatus() == Status.WATTING && v.doubleValue() >= 1.0) {
+				synchronized (ftpsea.getThread()) {
+					ftpsea.getThread().notifyAll();
+					ftpsea.setStatus(Status.RUNNING);
+				}
+			}
+		});
+
 	}
 
 	private void Init() {
@@ -122,23 +133,17 @@ public class ControlCloud implements Platform, Initializable {
 			ftp.login("donly", "root");
 			download = new Downloads(ftp, "E:\\Downloads");
 			upload = new Uploads(ftp);
+			folder.make();
 		} catch (IOException e) {
-			e.printStackTrace();
+			Print.log(Level.WARNING, e.getMessage());
 		}
 	}
 
-	@SuppressWarnings("deprecation")
 	private void reload() {
-		try {
-			if (ftpsea.isRunning()) {
-				ftpsea.getThread().stop();
-			}
-			folder.make();
-			Print.out(Status.No_Notification, "");
-			txtSearch.setText("");
-		} catch (Exception ex) {
-			ex.printStackTrace();
-		}
+		folder.make();
+		ftpsea.stop();
+		Print.out("Loading...");
+		txtSearch.setText("");
 	}
 
 	public void EVSearch(ActionEvent e) {
@@ -147,10 +152,11 @@ public class ControlCloud implements Platform, Initializable {
 			ftpsea.search(folder.getCurParent(), txtSearch.getText());
 
 			Platform.start(() -> {
-				System.out.println(ftpsea.isRunning());
-				while (ftpsea.isRunning()) {
+				System.out.println(ftpsea.getStatus());
+				while (ftpsea.getStatus() != Status.FINISH) {
 					if (!ftpsea.getResult().isEmpty())
 						folder.addFileItem(ftpsea.toListItem());
+					Print.out("Result find: " + ftpsea.getIndex() + "  can next!");
 					try {
 						Thread.sleep(300);
 					} catch (InterruptedException e1) {
@@ -158,7 +164,7 @@ public class ControlCloud implements Platform, Initializable {
 					}
 				}
 				folder.addFileItem(ftpsea.toListItem());
-				Print.out("Resut find: " + folder.getData().size() + "  finish!...");
+				Print.out("Finish! Resut find: " + folder.getData().size());
 			});
 		}
 		txtSearch.requestFocus();
@@ -209,7 +215,7 @@ public class ControlCloud implements Platform, Initializable {
 					dir.setTitle("Save");
 					File dirfile = dir.showDialog(new Stage());
 					if (item.getFTPFile() != null) {
-						Print.out(Content.DOWLOAD, item);
+						Print.out("Dowloading: " + item);
 						download.setRootFolder(dirfile.getAbsolutePath());
 						download.download(item.getFTPFile());
 					}

@@ -2,6 +2,7 @@ package server.gui.run.control;
 
 import java.net.URL;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -13,7 +14,6 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.text.Text;
 import resource.Loader;
 import server.api.Print;
-import server.api.Print.Content;
 import server.platform.Platform;
 
 public class ControlActivityMain implements Initializable, Platform {
@@ -35,7 +35,7 @@ public class ControlActivityMain implements Initializable, Platform {
 		Data.put(Type.StackPane, stackPane);
 		Data.put(Type.ITextPath, textPath);
 		Print.setText(textPath);
-		Print.out(Content.CHECK_VALUE, textPath);
+		Print.log(Level.FINE, textPath);
 		
 		imgH.setImage(Loader.loadImage("me.png"));
 		imgS.setImage(Loader.loadImage("share.png"));

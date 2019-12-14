@@ -29,7 +29,9 @@ import resource.Loader;
 import server.api.APIComputerFolder;
 import server.api.APILoader;
 import server.api.Notification;
+import server.api.Print;
 import server.api.search.MFSearch;
+import server.api.search.MFSearch.Status;
 import server.gui.item.MFFileItem;
 import server.platform.Platform;
 
@@ -53,10 +55,6 @@ public class ControlMyComputer implements Platform, Initializable {
 	@FXML
 	ImageView imgSearch;
 
-//	static Downloads download;
-//	static Uploads upload;
-//	static APIFolder folder;
-//	static FTPClient ftp;
 	static MFSearch mfsea;
 	static APIComputerFolder folder;
 	static String fol;
@@ -95,7 +93,13 @@ public class ControlMyComputer implements Platform, Initializable {
 
 		@Override
 		public void changed(ObservableValue<? extends Number> observable, Number oldValue, Number newValue) {
-			//To do
+			if (mfsea.getStatus() == Status.WATTING && newValue.doubleValue() >= 1.0) {
+				Print.out("Loading...");
+				synchronized (mfsea.getThread()) {
+					mfsea.getThread().notifyAll();
+					mfsea.setStatus(Status.RUNNING);
+				}
+			}
 		}
 	};
 
@@ -108,26 +112,23 @@ public class ControlMyComputer implements Platform, Initializable {
 				mfsea.search(folder.getCurParent().getAbsolutePath(), txtSearch.getText());
 
 				thread = Platform.start(() -> {
-					System.out.println(mfsea.isRunning());
-					while (mfsea.isRunning()) {
+					System.out.println(mfsea.getStatus());
+
+					while (mfsea.getStatus() != Status.FINISH) {
 						if (!mfsea.getResult().isEmpty()) {
 							folder.addFileIteam(mfsea.toListItem());
-							textPath.setText("Resut find: " + mfsea.getIndex() + "  finish!...");
 						}
 
+						Print.out("Result find: " + mfsea.getIndex() + "  can next!");
+
 						try {
-							if (mfsea.getIndex() > 100) {
-								synchronized (mfsea) {
-									mfsea.getThread().wait();
-								}
-							}
-							Thread.sleep(10);
+							Thread.sleep(20);
 						} catch (InterruptedException e1) {
 							e1.printStackTrace();
 						}
 					}
 					folder.addFileIteam(mfsea.toListItem());
-					textPath.setText("Resut find: " + mfsea.getIndex() + "  finish!...");
+					Print.out("Finsih! Result find: " + mfsea.getIndex());
 				});
 			} catch (Exception e2) {
 				e2.printStackTrace();

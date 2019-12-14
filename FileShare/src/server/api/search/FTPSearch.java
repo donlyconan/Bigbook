@@ -8,70 +8,88 @@ import java.util.Queue;
 
 import org.apache.commons.net.ftp.FTPClient;
 
-import javafx.scene.text.Text;
 import server.api.APIFTPFile;
+import server.api.Print;
+import server.api.search.MFSearch.Status;
 import server.platform.Platform;
 
 public class FTPSearch implements Platform {
-	private static Text text;
+	public static final int SIZExLOAD = 100;
 	private Thread thread;
 	private FTPClient ftp;
 	private Queue<APIFTPFile> result;
-	private boolean running;
+	private Status status;
 	private int index;
+	private int load;
 
 	public FTPSearch(FTPClient ftp) {
 		super();
 		this.ftp = ftp;
 		result = new LinkedList<APIFTPFile>();
-		text = (Text) Data.get(Type.ITextPath);
 	}
 
 	public void search(APIFTPFile root, String name) {
 		stop();
 		result.clear();
-		running = true;
-		index = 0;
-
+		index = load = 0;
+		status = Status.START;
+		
 		APIFTPFile file = null;
 		try {
 			file = APIFTPFile.getFTPFile(ftp, name);
 		} catch (IOException e1) {
 			e1.printStackTrace();
 		}
-		
+
 		if (file != null && (!file.isFile() || file.isFile())) {
 			result.add(file);
-			text.setText("Resut find: " + result.size() + "  finish!");
+			Print.out("Result find: " + result.size() + "  finish!");
 		} else {
 
 			thread = Platform.start(() -> {
 				FTPFilter fil = new FTPFilter(name);
-				text.setText("Resut find: " + result.size());
+				
 				try {
 					excutingSearchFTP(root, fil, name);
 				} catch (IOException e) {
 					e.printStackTrace();
+				} catch (InterruptedException e) {
+					e.printStackTrace();
 				}
-				running = false;
 			});
 		}
-		text.setText("Resut find: " + index + "  finish!");
+		status = Status.FINISH;
 	}
 
-	public void excutingSearchFTP(APIFTPFile root, FTPFilter fil, String name) throws IOException {
-		List<APIFTPFile> list = root.listFile(ftp, fil);
-		
-		for (APIFTPFile item : list) {
-			if (item.isFile()) {
-				System.out.println(item);
-				result.add(item);
-			} else {
-				if (item.getName().equalsIgnoreCase(name)) {
-					result.add(item);
-						text.setText("Resut find: " + result.size() + "  running...");
+	public synchronized void excutingSearchFTP(APIFTPFile root, FTPFilter fil, String name)
+			throws IOException, InterruptedException {
+		synchronized (ftp) {
+			List<APIFTPFile> list = root.listFile(ftp, fil);
+			
+			if (load > SIZExLOAD) {
+				synchronized (thread) {
+					thread.wait();
 				}
-				excutingSearchFTP(item, fil, name);
+			}
+			
+			status = Status.RUNNING;
+
+			for (APIFTPFile item : list) {
+				if (item.isFile()) {
+					index++;
+					load++;
+					result.add(item);
+					
+				} else {
+					
+					if (item.getName().equalsIgnoreCase(name)) {
+						index++;
+						load++;
+						result.add(item);
+					}
+					
+					excutingSearchFTP(item, fil, name);
+				}
 			}
 		}
 	}
@@ -111,12 +129,30 @@ public class FTPSearch implements Platform {
 		this.thread = thread;
 	}
 
-	public boolean isRunning() {
-		return running;
+
+
+	public Status getStatus() {
+		return status;
 	}
 
-	public void setRunning(boolean running) {
-		this.running = running;
+	public void setStatus(Status status) {
+		this.status = status;
+	}
+
+	public int getIndex() {
+		return index;
+	}
+
+	public void setIndex(int index) {
+		this.index = index;
+	}
+
+	public int getLoad() {
+		return load;
+	}
+
+	public void setLoad(int load) {
+		this.load = load;
 	}
 
 	public FTPClient getFtp() {

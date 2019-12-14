@@ -79,25 +79,27 @@ public class APIComputerFolder implements Platform, EventHandler<MouseEvent> {
 		}
 	}
 
-	public void make() {
-		if (curParent != null) {
-			File[] files = curParent.listFiles();
-			data.clear();
-			if (files != null) {
-				for (File item : files) {
-					MFFileItem file = new MFFileItem(item);
-					file.setOnMouseClicked(this);
-					data.add(file);
+	public synchronized void make() {
+		synchronized (data) {
+			if (curParent != null) {
+				File[] files = curParent.listFiles();
+				data.clear();
+				if (files != null) {
+					for (File item : files) {
+						MFFileItem file = new MFFileItem(item);
+						file.setOnMouseClicked(this);
+						data.add(file);
+					}
 				}
+				
+				if(data.isEmpty())
+				{
+					data.add(APILoader.createLableEmpty());
+				}
+			} else {
+				data.clear();
+				data.addAll(root);
 			}
-			
-			if(data.isEmpty())
-			{
-				data.add(APILoader.createLableEmpty());
-			}
-		} else {
-			data.clear();
-			data.addAll(root);
 		}
 	}
 
@@ -132,8 +134,8 @@ public class APIComputerFolder implements Platform, EventHandler<MouseEvent> {
 		File file = item.getFile();
 		if (file.exists()) {
 			File new_file = new File(file.getParent(), new_name);
-			System.out.println("Rename =" + file.getParent());
-			System.out.println("Rename =" + new_file.getAbsolutePath());
+//			System.out.println("Rename =" + file.getParent());
+//			System.out.println("Rename =" + new_file.getAbsolutePath());
 			if (!new_file.exists() && file.renameTo(new_file)) {
 				item.setText(new_name);
 			} else

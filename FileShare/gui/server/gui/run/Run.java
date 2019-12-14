@@ -1,14 +1,15 @@
 package server.gui.run;
 
+import java.util.logging.Level;
+
 import javafx.application.Application;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import resource.Loader;
 import server.api.APILoader;
-import server.api.Print;
-import server.api.Print.Content;
 import server.api.Notification;
+import server.api.Print;
 import server.platform.Platform;
 
 public class Run extends Application implements Platform {
@@ -16,7 +17,7 @@ public class Run extends Application implements Platform {
 
 	@Override
 	public void start(Stage primaryStage) throws Exception {
-		Print.out(Content.LOADING, "Loading...");
+		Print.log(Level.INFO, "Loading...");
 		
 		try {
 			Loader.Load();
