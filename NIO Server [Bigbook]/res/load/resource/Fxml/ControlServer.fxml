@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.scene.control.*?>
+<?import java.lang.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="650.0" prefWidth="1100.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="gui.control.Controller">
+   <top>
+      <AnchorPane>
+         <children>
+            <MenuBar prefHeight="30.0" style="-fx-font-size: 12;" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" BorderPane.alignment="CENTER">
+              <menus>
+                <Menu mnemonicParsing="false" text="File">
+                  <items>
+                        <MenuItem mnemonicParsing="false" text="Start" />
+                        <MenuItem mnemonicParsing="false" text="Stop" />
+                        <MenuItem mnemonicParsing="false" text="Restart" />
+                    <MenuItem mnemonicParsing="false" text="Close" />
+                  </items>
+                </Menu>
+                <Menu mnemonicParsing="false" text="Manager">
+                  <items>
+                        <MenuItem mnemonicParsing="false" text="Groups" />
+                        <MenuItem mnemonicParsing="false" text="Users" />
+                  </items>
+                </Menu>
+                  <Menu mnemonicParsing="false" text="Settings" />
+                <Menu mnemonicParsing="false" text="Help">
+                  <items>
+                    <MenuItem mnemonicParsing="false" text="About" />
+                  </items>
+                </Menu>
+              </menus>
+            </MenuBar>
+            <ToolBar layoutY="26.0" prefHeight="38.0" prefWidth="1100.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="28.0">
+              <items>
+                <Button mnemonicParsing="false" onAction="#EVtoolBar" prefHeight="25.0" prefWidth="54.0" text="Status">
+                     <font>
+                        <Font name="Cambria" size="13.0" />
+                     </font></Button>
+                  <Button mnemonicParsing="false" onAction="#EVtoolBar" prefHeight="25.0" prefWidth="91.0" text="User online">
+                     <font>
+                        <Font name="Cambria" size="13.0" />
+                     </font></Button>
+              </items>
+            </ToolBar>
+         </children>
+      </AnchorPane>
+   </top>
+   <center>
+      <StackPane fx:id="idStack" prefHeight="572.0" prefWidth="900.0" BorderPane.alignment="CENTER">
+         <children>
+            <TextArea fx:id="idStatus" editable="false" prefHeight="333.0" prefWidth="1100.0" promptText="Status Server !" style="-fx-background-color: transparent;" wrapText="true" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+               <font>
+                  <Font name="Cambria" size="14.0" />
+               </font>
+               <contextMenu>
+                  <ContextMenu>
+                    <items>
+                      <MenuItem mnemonicParsing="false" text="Copy to clipbroad" />
+                        <MenuItem mnemonicParsing="false" text="Clear All" />
+                    </items>
+                  </ContextMenu>
+               </contextMenu>
+            </TextArea>
+            <TableView fx:id="idTable" prefHeight="200.0" prefWidth="200.0" style="-fx-family: cambria; -fx-font-size: 13px;" tableMenuButtonVisible="true" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+               <columnResizePolicy>
+                  <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+               </columnResizePolicy>
+               <columns>
+                  <TableColumn maxWidth="200.0" minWidth="100.0" prefWidth="200.0" text="ID" />
+                  <TableColumn maxWidth="400.0" minWidth="250.0" prefWidth="250.0" text="Account" />
+                  <TableColumn maxWidth="200.0" minWidth="160.0" prefWidth="160.0" text="IP" />
+                  <TableColumn prefWidth="75.0" text="Status" />
+                  <TableColumn prefWidth="75.0" text="Datetime" />
+               </columns>
+               <contextMenu>
+                  <ContextMenu>
+                    <items>
+                      <MenuItem mnemonicParsing="false" text="Kick user" />
+                        <MenuItem mnemonicParsing="false" text="Ban user" />
+                    </items>
+                  </ContextMenu>
+               </contextMenu>
+            </TableView>
+         </children></StackPane>
+   </center>
+   <bottom>
+      <AnchorPane prefHeight="10.0" prefWidth="1100.0" BorderPane.alignment="CENTER">
+         <children>
+            <Text layoutX="5.0" layoutY="23.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Ready" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.topAnchor="5.0" />
+         </children></AnchorPane>
+   </bottom>
+</BorderPane>

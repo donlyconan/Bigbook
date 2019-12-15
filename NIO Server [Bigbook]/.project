@@ -26,9 +26,9 @@
 			<location>/home/donly/Downloads/Bigbook-master/Bigbook Server/Bigbook Server/res</location>
 		</link>
 		<link>
-			<name>src</name>
+			<name>srcOld</name>
 			<type>2</type>
-			<location>/home/donly/Downloads/Bigbook-master/Bigbook Server/Bigbook Server/src</location>
+			<location>/home/donly/git/Bigbook/NIO Server [Bigbook]/src</location>
 		</link>
 		<link>
 			<name>tes</name>

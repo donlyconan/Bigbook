@@ -114,7 +114,7 @@ public class ControlMyComputer implements Platform, Initializable {
 				thread = Platform.start(() -> {
 					System.out.println(mfsea.getStatus());
 
-					while (mfsea.getStatus() != Status.FINISH) {
+					while (mfsea.getStatus() != Status.FINISHc) {
 						if (!mfsea.getResult().isEmpty()) {
 							folder.addFileIteam(mfsea.toListItem());
 						}
