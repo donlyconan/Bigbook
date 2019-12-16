@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry kind="src" path="gui"/>
 	<classpathentry kind="src" path="srcOld"/>
+	<classpathentry kind="src" path="guiOld"/>
 	<classpathentry kind="src" path=".settings"/>
 	<classpathentry kind="src" path="tes"/>
 	<classpathentry kind="src" path="res"/>

@@ -71,6 +71,11 @@ public class SystemRunning extends JFrame {
 		
 		lbStatus = new JLabel("Ready");
 		panel.add(lbStatus);
+		
+		JMenuBar menubar = new JMenuBar();
+		textArea.add(menubar);
+		menubar.add(new JMenu("123"));
+		
 	}
 	
 	

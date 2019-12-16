@@ -17,6 +17,7 @@ public class Run implements Platform
 		} catch (IOException e) {
 			JOptionPane.showMessageDialog(null, e.getMessage());
 			e.printStackTrace();
+			System.exit(0);
 		}
 	}
 
