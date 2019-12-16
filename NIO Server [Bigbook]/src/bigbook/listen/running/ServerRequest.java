@@ -4,89 +4,86 @@ import java.nio.ByteBuffer;
 import java.nio.channels.SelectionKey;
 
 import bigbook.Platform.Platform;
-import bigbook.Platform.Transfer;
 import bigbook.listen.action.NIOSocketChannelID;
 import bigbook.reprement.Account;
 import bigbook.transfer.DataPackage;
 import bigbook.transfer.DataReader;
+import bigbook.transfer.buffer.Message;
 import ui.Print;
 import ui.Print.Content;
 
-public class ServerRequest implements Platform, Runnable {
-	private NIOSocketChannelID IDchannel = null;
-	private ServerResponse response = null;
+public class ServerRequest implements Platform {
+	private NIOSocketChannelID channel = null;
 	private DataReader dataReader = null;
 	private Account account = null;
-	private String content = null;
-	private ByteBuffer bufferReader;
+	private Message message;
 	private DataPackage data;
+	private ServerResponse response;
 
 	public ServerRequest(NIOSocketChannelID socketID) {
 		super();
-		this.IDchannel = socketID;
+		this.channel = socketID;
 		response = new ServerResponse(socketID);
 	}
-	
+
 	public ServerRequest(NIOSocketChannelID socket, ByteBuffer bufferReader) {
 		super();
-		this.IDchannel = socket;
-		this.bufferReader = bufferReader;
+		this.channel = socket;
+		this.message = Message.createMessage(bufferReader);
 		response = new ServerResponse(socket);
 	}
 
-	@Override
-	public void run() {
-		try {
-			data = DataPackage.valuesOf(bufferReader.array());
-			
-			switch (data.request()) {
-			case RQxLogin:
-				account = (Account) Transfer.getObject(data.data());
-				Print.out(Content.ACCOUNT, account);
-				response.handle(Respone.RPxLogin, data);
-				break;
-			case RQxMAccount:
+	public void handle() {
+		synchronized (channel) {
+			try {
+				Print.out(Content.MODExREAD, new String(message.data()));
+				channel.attach(message.pack());
+				Print.out(new String(message.pack()));
+				response.handle();
 
-				break;
-			case RQxSMessage:
-				content = (String) data.getObject();
-				Print.out(Content.MESSAGE, content);
-				break;
-			case RQxSConnectVoiceChat:
+				switch (Request.RQxSMessage) {
+				case RQxLogin:
+//					account = (Account) Transfer.getObject(data.data());
+//					Print.out(Content.ACCOUNT, account);
+//					data.setResponse(Response.RPxSMessage);
+//					IDchannel.flip();
 
-				break;
-			case RQxSFile:
+					break;
+				case RQxMAccount:
 
-				break;
-			case RQxSFinishVoiceChat:
+					break;
+				case RQxSMessage:
+					channel.attach("123444");
 
-				break;
-			case RQxSImage:
+					break;
+				case RQxSConnectVoiceChat:
 
-				break;
-			case RQxLogout:
-				Print.out(IDchannel.channel().getRemoteAddress() + " is quiting");
-				IDchannel.close();
-				break;
-			default:
-				break;
+					break;
+				case RQxSFile:
+
+					break;
+				case RQxSFinishVoiceChat:
+
+					break;
+				case RQxSImage:
+
+					break;
+				case RQxLogout:
+					Print.out(channel.channel().getRemoteAddress() + " is quiting");
+					channel.enableConnectMode();
+					break;
+				default:
+					break;
+				}
+
+			} catch (Exception e) {
+				Print.out(Content.ERROR, e.getMessage() + " code=" + (data != null ? data.getCode() : null));
+				channel.enableConnectMode();
+				e.printStackTrace();
 			}
-
-			bufferReader.clear();
-		} catch (Exception e) {
-			Print.out(Content.ERROR, e.getMessage() + " code=" + (data != null ? data.getCode() : null));
-			IDchannel.getSelectrioKey().interestOps(SelectionKey.OP_CONNECT);
-			e.printStackTrace();
+			
+			channel.enableWriteMode();
 		}
-
-	}
-
-	public ServerResponse getResponse() {
-		return response;
-	}
-
-	public void setResponse(ServerResponse response) {
-		this.response = response;
 	}
 
 	public DataReader getDataReader() {
@@ -103,6 +100,38 @@ public class ServerRequest implements Platform, Runnable {
 
 	public void setData(DataPackage data) {
 		this.data = data;
+	}
+
+	public NIOSocketChannelID getChannel() {
+		return channel;
+	}
+
+	public void setChannel(NIOSocketChannelID channel) {
+		this.channel = channel;
+	}
+
+	public Account getAccount() {
+		return account;
+	}
+
+	public void setAccount(Account account) {
+		this.account = account;
+	}
+
+	public Message getMessage() {
+		return message;
+	}
+
+	public void setMessage(Message message) {
+		this.message = message;
+	}
+
+	public ServerResponse getResponse() {
+		return response;
+	}
+
+	public void setResponse(ServerResponse response) {
+		this.response = response;
 	}
 
 }

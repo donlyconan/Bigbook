@@ -5,38 +5,82 @@ import java.nio.ByteBuffer;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.SocketChannel;
 
+/**
+ * Handle socket Write, Read, Mode select
+ * 
+ * @author donly
+ */
 public class NIOSocketChannelID {
 	private String idSocket;
-	private SelectionKey selectrioKey;
+	private SelectionKey selectionKey;
 	public boolean connect;
 
 	public NIOSocketChannelID(SelectionKey selectrioKey) {
 		super();
-		this.selectrioKey = selectrioKey;
+		this.selectionKey = selectrioKey;
+		connect = true;
 	}
 
 	public NIOSocketChannelID(String idSocket, SelectionKey selectrioKey) {
 		super();
 		this.idSocket = idSocket;
-		this.selectrioKey = selectrioKey;
+		this.selectionKey = selectrioKey;
+		connect = true;
 	}
 
 	public int read(ByteBuffer byteBuffer) throws IOException {
 		int read = channel().read(byteBuffer);
 
-		if (read == -1)
+		if (read == -1) {
+			System.out.println(read + " bytebuffer=" + byteBuffer.toString() + " \t" + channel().getRemoteAddress());
 			connect = false;
+		}
 
 		return read;
 	}
 
 	public int write(ByteBuffer byteBuffer) throws IOException {
-		return this.channel().write(byteBuffer);
+		int write = 0;
+
+		if (byteBuffer.limit() > byteBuffer.position() && byteBuffer.limit() != 0) {
+			write = channel().write(byteBuffer);
+		}
+		return write;
+	}
+
+	public void flip() {
+		int flipping = selectionKey.interestOps();
+		if (flipping == SelectionKey.OP_READ)
+			selectionKey.interestOps(SelectionKey.OP_WRITE);
+		else
+			selectionKey.interestOps(SelectionKey.OP_READ);
+	}
+
+	public void enableReadMode() {
+		selectionKey.interestOps(SelectionKey.OP_READ);
+	}
+
+	public void enableWriteMode() {
+		selectionKey.interestOps(SelectionKey.OP_WRITE);
+	}
+
+	public void enableConnectMode() {
+		selectionKey.interestOps(SelectionKey.OP_CONNECT);
+	}
+
+	public void attach(Object obj) {
+		selectionKey.attach(obj);
+	}
+
+	public Object attachment() {
+		Object obj = selectionKey.attachment();
+		selectionKey.attach(null);
+		return obj;
 	}
 
 	public void close() throws IOException {
-		selectrioKey.cancel();
-		selectrioKey.channel().close();
+		selectionKey.cancel();
+		selectionKey.channel().close();
 	}
 
 	public String Id() {
@@ -44,7 +88,7 @@ public class NIOSocketChannelID {
 	}
 
 	public SocketChannel channel() {
-		return (SocketChannel) selectrioKey.channel();
+		return (SocketChannel) selectionKey.channel();
 	}
 
 	public boolean isConnect() {
@@ -64,11 +108,11 @@ public class NIOSocketChannelID {
 	}
 
 	public SelectionKey getSelectrioKey() {
-		return selectrioKey;
+		return selectionKey;
 	}
 
 	public void setSelectrioKey(SelectionKey selectrioKey) {
-		this.selectrioKey = selectrioKey;
+		this.selectionKey = selectrioKey;
 	}
 
 }

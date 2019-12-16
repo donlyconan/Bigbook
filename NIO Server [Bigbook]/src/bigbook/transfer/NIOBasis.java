@@ -1,6 +1,6 @@
-package bigbook.listen;
+package bigbook.transfer;
 
-public interface IServer {
+public interface NIOBasis {
 	
 	public void start() throws Exception;
 	

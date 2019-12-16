@@ -29,7 +29,6 @@ public interface Transfer extends Platform, Serializable {
 		byte[] data = toByteArray(object);
 		ByteBuffer buffer = ByteBuffer.allocate(data.length);
 		buffer.put(data);
-		buffer.flip();
 		return buffer;
 	}
 	

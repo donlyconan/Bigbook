@@ -1,54 +1,93 @@
 package bigbook.listen.running;
 
 import java.io.IOException;
+import java.nio.ByteBuffer;
 
 import bigbook.Platform.Platform;
 import bigbook.listen.action.NIOSocketChannelID;
-import bigbook.reprement.Account;
-import bigbook.transfer.DataPackage;
+import bigbook.transfer.buffer.Message;
+import ui.Print;
+import ui.Print.Content;
 
 public class ServerResponse implements Platform {
-	private NIOSocketChannelID socket;
-	
+	private NIOSocketChannelID channel;
+	private ByteBuffer buffer;
 
 	public ServerResponse(NIOSocketChannelID socket) {
-		this.socket = socket;
+		this.channel = socket;
 	}
 
-	public void handle(Respone key, DataPackage data) throws IOException, ClassNotFoundException {
+	public void handle() {
+		synchronized (channel) {
+//			Message data = Message.createMessage((byte[]) channel.attachment());
 
-		switch (key) {
-		case RPxLogin:
-			data = new DataPackage(Respone.RPxLogin, Account.Status.ACCxLOGIN_SUCCESS);
-			data.setCode(Respone.RPxLogin);
-//			socket.write(data.toByteBuffer());
-			break;
-		case RPxLogout:
-			break;
-		case RPxMAccount:
-			break;
-		case RPxSConnectVoiceChat:
-			break;
-		case RPxSFile:
-			break;
-		case RPxSFinishVoiceChat:
-			break;
-		case RPxSImage:
-			break;
-		case RPxSMessage:
-			break;
-		default:
-			break;
+//			Response mode = Response.valueOf(data.header());
+			try {
+//				Print.out(new String(data.pack()));
+				channel.enableReadMode();
 
+				switch (Response.RPxSMessage) {
+				case RPxLogin:
+//					data.setHeader(mode);
+//				socket.write(data.toByteBuffer());
+
+					break;
+				case RPxLogout:
+
+					break;
+				case RPxMAccount:
+
+					break;
+				case RPxSConnectVoiceChat:
+
+					break;
+				case RPxSFile:
+
+					break;
+				case RPxSFinishVoiceChat:
+
+					break;
+				case RPxSImage:
+
+					break;
+				case RPxSMessage:
+
+					int write = channel.write(ByteBuffer.wrap("1hhhhhhhhhhhhhhhhh".getBytes()));
+					Print.out(Content.MODExWRITE, "  Data wirte=" + write);
+
+					break;
+				}
+
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			
+			channel.enableReadMode();
 		}
 	}
 
 	public NIOSocketChannelID getSocket() {
-		return socket;
+		return channel;
 	}
 
 	public void setSocket(NIOSocketChannelID socket) {
-		this.socket = socket;
+		this.channel = socket;
+	}
+
+	public NIOSocketChannelID getChannel() {
+		return channel;
+	}
+
+	public void setChannel(NIOSocketChannelID channel) {
+		this.channel = channel;
+	}
+
+	public ByteBuffer getBuffer() {
+		return buffer;
+	}
+
+	public void setBuffer(ByteBuffer buffer) {
+		this.buffer = buffer;
 	}
 
 }

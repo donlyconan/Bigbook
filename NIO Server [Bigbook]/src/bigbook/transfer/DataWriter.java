@@ -6,6 +6,8 @@ import java.nio.channels.SocketChannel;
 import java.util.ArrayList;
 import java.util.List;
 
+import bigbook.transfer.buffer.Message;
+
 public class DataWriter {
 
     private List<Message> writeQueue   = new ArrayList<>();
@@ -14,26 +16,26 @@ public class DataWriter {
 
     public DataWriter() {
     }
-
-    public void write(SocketChannel socket, ByteBuffer byteBuffer) throws IOException {
-        byteBuffer.put(this.messageInProgress.sharedArray, this.messageInProgress.offset + this.bytesWritten, this.messageInProgress.length - this.bytesWritten);
-        byteBuffer.flip();
-
-        this.bytesWritten += socket.write(byteBuffer);
-        byteBuffer.clear();
-
-        if(bytesWritten >= this.messageInProgress.length){
-            if(this.writeQueue.size() > 0){
-                this.messageInProgress = this.writeQueue.remove(0);
-            } else {
-                this.messageInProgress = null;
-                //todo unregister from selector
-            }
-        }
-    }
-
-    public boolean isEmpty() {
-        return this.writeQueue.isEmpty() && this.messageInProgress == null;
-    }
+//
+//    public void write(SocketChannel socket, ByteBuffer byteBuffer) throws IOException {
+//        byteBuffer.put(this.messageInProgress.sharedArray, this.messageInProgress.offset + this.bytesWritten, this.messageInProgress.length - this.bytesWritten);
+//        byteBuffer.flip();
+//
+//        this.bytesWritten += socket.write(byteBuffer);
+//        byteBuffer.clear();
+//
+//        if(bytesWritten >= this.messageInProgress.length){
+//            if(this.writeQueue.size() > 0){
+//                this.messageInProgress = this.writeQueue.remove(0);
+//            } else {
+//                this.messageInProgress = null;
+//                //todo unregister from selector
+//            }
+//        }
+//    }
+//
+//    public boolean isEmpty() {
+//        return this.writeQueue.isEmpty() && this.messageInProgress == null;
+//    }
 
 }

@@ -17,9 +17,17 @@ import java.util.logging.Logger;
 
 import bigbook.Platform.Platform;
 import bigbook.Platform.Transfer;
+import bigbook.listen.running.ServerRequest;
+import bigbook.listen.running.ServerResponse;
 import ui.Print;
 import ui.Print.Content;
 
+/**
+ * handle connect, Request form client selector , registor
+ * 
+ * @author donly
+ *
+ */
 public class NIOSocketProcessor implements Runnable, Platform {
 	public static enum Mode {
 		ACCEPT, READ, WRITE, CONNECT, VALID
@@ -27,7 +35,7 @@ public class NIOSocketProcessor implements Runnable, Platform {
 
 	private static final int MAX_THREADS = 2000;
 	private final Map<String, NIOSocketChannelID> managerSocket = new HashMap<>();
-	private final ByteBuffer bufferReader = ByteBuffer.allocate(Transfer.HAFT_OF_KB);
+	private final ByteBuffer bufferReader = ByteBuffer.allocate(Transfer.CAPACITY_SMALL);
 	private final ByteBuffer bufferWriter = ByteBuffer.allocate(Transfer.MB);
 
 	private Queue<SocketChannel> socketQueue;
@@ -71,16 +79,17 @@ public class NIOSocketProcessor implements Runnable, Platform {
 	@SuppressWarnings("unlikely-arg-type")
 	public void handle() throws IOException {
 		seletor.selectNow();
-		Set<SelectionKey> keys = seletor.selectedKeys();
-		Iterator<SelectionKey> iter = keys.iterator();
+		Set<SelectionKey> keySet = seletor.selectedKeys();
+		Iterator<SelectionKey> iterator = keySet.iterator();
 
-		while (iter.hasNext()) {
+		while (iterator.hasNext()) {
+
+			curKey = iterator.next();
+			iterator.remove();
+
 			try {
-				curKey = iter.next();
-				iter.remove();
 				Mode mode = getMode(curKey);
-
-//				Print.out("Mode current of Server Processor: " + mode);
+				Print.out("Mode current of Server Processor: " + mode);
 
 				switch (mode) {
 				case ACCEPT:
@@ -95,16 +104,25 @@ public class NIOSocketProcessor implements Runnable, Platform {
 					IDchannel.read(bufferReader);
 					Print.out(bufferReader.toString());
 
-					if (!IDchannel.connect)
-					{
-						Print.out(Content.MODExCONNECT,"finish connect = " + !IDchannel.connect + " &&" + IDchannel.channel().finishConnect());
-						IDchannel.close();
+					if (IDchannel.isConnect()) {
+						ServerRequest request = new ServerRequest(IDchannel, bufferReader);
+						threadPool.execute(() -> request.handle());
+					} else {
+						// Shutdown connection error! or disconnect
+						IDchannel.enableConnectMode();
 					}
-//					ServerRequest request = new ServerRequest(IDchannel, bufferReader);
-//					threadPool.execute(request);
 					break;
 				case WRITE:
-					// To do
+					IDchannel = new NIOSocketChannelID(curKey);
+
+					if (IDchannel.isConnect()) {
+						ServerResponse res = new ServerResponse(IDchannel);
+						// Start thread execute task server response
+						threadPool.execute(() -> res.handle());
+					} else {
+						// Close channel if client shutdown connect
+						IDchannel.enableConnectMode();
+					}
 
 					break;
 				case VALID:
@@ -113,17 +131,21 @@ public class NIOSocketProcessor implements Runnable, Platform {
 					break;
 
 				case CONNECT:
+					/*
+					 * decrease index of client remove client from manager client cancel register
+					 * and close channel
+					 */
 					numberID--;
 					curKey.cancel();
 					managerSocket.remove(curKey);
 
-					Print.out(Content.MODExCONNECT, "QUIT! " + curKey.attachment());
+					Print.out(Content.MODExCONNECT, "QUIT! " + curKey);
 					close(curKey);
 					break;
 				}
-			} catch (Exception e) {
-				SocketChannel socket = (SocketChannel) curKey.channel();
-				socket.close();
+			} catch (IOException e) {
+				curKey.interestOps(SelectionKey.OP_CONNECT);
+				e.printStackTrace();
 			}
 
 		}

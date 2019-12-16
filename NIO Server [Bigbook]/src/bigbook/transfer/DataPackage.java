@@ -65,6 +65,14 @@ public class DataPackage implements Transfer, Serializable {
 		this.time = time;
 	}
 
+	public void setRequest(Request req) {
+		code = req.toString();
+	}
+
+	public void setResponse(Response res) {
+		code = res.toString();
+	}
+
 	public static DataPackage valuesOf(Object value) {
 		return (DataPackage) value;
 	}
@@ -87,8 +95,8 @@ public class DataPackage implements Transfer, Serializable {
 		return Request.valueOf(code);
 	}
 
-	public Respone respone() {
-		return Respone.valueOf(code);
+	public Response respone() {
+		return Response.valueOf(code);
 
 	}
 

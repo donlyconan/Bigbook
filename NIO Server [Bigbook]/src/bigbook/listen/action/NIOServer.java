@@ -6,10 +6,10 @@ import java.nio.channels.SocketChannel;
 import java.util.Queue;
 import java.util.concurrent.ArrayBlockingQueue;
 
-import bigbook.listen.IServer;
+import bigbook.listen.NIOBasis;
 import ui.Print;
 
-public class NIOServer implements IServer {
+public class NIOServer implements NIOBasis {
 	public static final int BLOCKING = 2048;
 	private int port;
 	private NIOSocketProcessor socketProcessor;

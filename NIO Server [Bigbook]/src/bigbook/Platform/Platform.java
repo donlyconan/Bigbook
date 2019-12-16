@@ -25,7 +25,7 @@ public interface Platform  {
 		RQxSFinishVoiceChat
 	}
 	
-	public static enum Respone {
+	public static enum Response {
 		//Phản hồi
 		RPxMAccount,
 		RPxLogin , 
