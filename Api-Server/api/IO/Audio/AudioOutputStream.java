@@ -1,6 +1,7 @@
 package IO.Audio;
 
 import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioFormat.Encoding;
@@ -8,8 +9,6 @@ import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.DataLine;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.TargetDataLine;
-
-import notification.print.Print;
 
 public class AudioOutputStream extends Thread {
 	private TargetDataLine target;
@@ -26,7 +25,7 @@ public class AudioOutputStream extends Thread {
 			target.open();
 			target.start();
 		} else {
-			Print.out(Level.WARNING, "System not support!");
+			Logger.getAnonymousLogger().log(Level.WARNING, "System not support!");
 		}
 	}
 	

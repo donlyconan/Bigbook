@@ -1,6 +1,7 @@
 package IO.Audio;
 
 import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import javax.sound.sampled.AudioFormat;
 import javax.sound.sampled.AudioSystem;
@@ -8,26 +9,24 @@ import javax.sound.sampled.DataLine;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.SourceDataLine;
 
-import Tranfer.Server.Donly.UDPRecieveData;
-import notification.print.Print;
-
 public class AudioInputStream extends Thread {
 	private SourceDataLine source;
 	private AudioFormat format;
 
-	public AudioInputStream(UDPRecieveData udpRecieve) throws LineUnavailableException {
+	private AudioInputStream() {
 		format = AudioOutputStream.getAudioFormat();
 	}
 
-	public void open() throws LineUnavailableException {
+	public SourceDataLine open() throws LineUnavailableException {
 		DataLine.Info info = new DataLine.Info(SourceDataLine.class, format);
 		if (AudioSystem.isLineSupported(info)) {
 			source = (SourceDataLine) AudioSystem.getLine(info);
 			source.open();
 			source.start();
 		} else {
-			Print.out(Level.WARNING, "System not support audio!");
+			Logger.getAnonymousLogger().log(Level.WARNING,"System not support audio!");
 		}
+		return source;
 	}
 
 	public void write(byte[] data) {
